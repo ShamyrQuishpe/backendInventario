@@ -21,6 +21,7 @@ const loginUsuario = async (req, res) => {
         apellido,
         token,
         _id,
+        rol,
         email: userBDD.email
     })
 }
