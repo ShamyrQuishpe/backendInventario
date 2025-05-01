@@ -11,4 +11,6 @@ const categorySchema = new Schema({
     }
 })
 
-export default model('Categories',categorySchema)
+const Categories = mongoose.model('Categories', categorySchema); // Nombre del modelo 'Categories'
+
+export default Categories;

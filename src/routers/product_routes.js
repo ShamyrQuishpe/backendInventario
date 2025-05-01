@@ -1,20 +1,26 @@
 import { Router } from "express";
 import autenticar from "../middlewares/auth.js";
 import verificarRol from "../middlewares/verifyrol.js";
-import { agregarProducto } from "../controllers/product_controller.js";
+import { 
+    agregarProducto, 
+    listarProductos, 
+    listarProductoPorCodigoBarras, 
+    actualizarProducto, 
+    eliminarProducto 
+} from "../controllers/product_controller.js";
 
 const router = Router()
 
 
 router.post('/agregarProducto', autenticar, verificarRol('Administrador'),agregarProducto)
 
-//router.get('/listarProductos',)
+router.get('/listarProductos', listarProductos)
 
-//router.get('/listarProducto/:codigoBarras',)
+router.get('/listarProducto/:codigoBarras', listarProductoPorCodigoBarras)
 
-//router.put('/actualzarProducto')
+router.put('/actualizarProducto/:codigoBarras', actualizarProducto)
 
-//router.delete('/eliminarProducto')
+router.delete('/eliminarProducto/:codigoBarras', eliminarProducto)
 
 //Faltan endpoints para los pr
 
