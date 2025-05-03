@@ -37,6 +37,10 @@ const productSchema = new Schema({
         type: String,
         require: true
     },
+    estado:{
+        type: String,
+        require: true
+    },
     categoriaNombre:{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'category',

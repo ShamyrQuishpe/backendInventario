@@ -53,7 +53,8 @@ const agregarProducto = async (req, res) => {
             ...otrosCampos,
             codigoBarras: codigoBarrasGenerado,
             responsable: req.user._id,
-            categoriaNombre: categoria._id,  
+            categoriaNombre: categoria._id,
+            estado:"Disponible",
         });
 
         console.log(req.user._id)
