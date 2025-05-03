@@ -1,20 +1,35 @@
 import Categories from '../models/category.js'
 
-const crearCategoria = async (req,res) => {
-    const{ nombreCategoria, descripcionCategoria } = req.body;
+const crearCategoria = async (req, res) => {
+    const { nombreCategoria, descripcionCategoria } = req.body;
 
-    if(!nombreCategoria || !descripcionCategoria) {
-        return res.status(400).json({ msg: "Todos los campos son obligatorios"})
+    if (!nombreCategoria || !descripcionCategoria) {
+        return res.status(400).json({ msg: "Todos los campos son obligatorios" });
     }
 
     try {
-        const nuevaCategoria = new Categories({ nombreCategoria, descripcionCategoria })
-        await nuevaCategoria.save()
-        res.status(200).json({ msg: "Categoria creada correctamente", categoria: nuevaCategoria})
-    }catch(error){
-        res.status(500).json({ msg: "Error al crear la categoria",error})
+        // Verificar si el nombre de la categoría ya existe
+        const categoriaExistente = await Categories.findOne({ nombreCategoria: nombreCategoria.trim().toLowerCase() });
+
+        if (categoriaExistente) {
+            return res.status(400).json({ msg: "El nombre de la categoría ya existe" });
+        }
+
+        // Crear nueva categoría
+        const nuevaCategoria = new Categories({ 
+            nombreCategoria: nombreCategoria.trim().toLowerCase(), 
+            descripcionCategoria 
+        });
+
+        await nuevaCategoria.save();
+
+        res.status(200).json({ msg: "Categoría creada correctamente", categoria: nuevaCategoria });
+
+    } catch (error) {
+        res.status(500).json({ msg: "Error al crear la categoría", error });
     }
-}
+};
+
 
 const listarCategorias = async (req,res) => {
     try{
