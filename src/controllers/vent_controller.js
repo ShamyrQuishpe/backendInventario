@@ -85,5 +85,83 @@ const registrarVenta = async (req, res) => {
     }
 };
 
+const listarVentas = async (req, res) => {
+    try {
+        const ventas = await Vents.find()
 
-export { registrarVenta };
+        if(ventas.length === 0){
+            return res.status(400).json({ msg: "No se encontraron ventas"})
+        }
+
+        res.status(200).json(ventas);
+    } catch (error) {
+        console.error("Error al listar ventas:", error);
+        res.status(500).json({ msg: "Error al listar las ventas" });
+    }
+};
+
+const detalleVenta = async (req, res) => {
+    try {
+        const venta = await Vents.findById(req.params.id)
+
+        if (!venta) {
+            return res.status(404).json({ msg: "Venta no encontrada" });
+        }
+
+        res.status(200).json(venta);
+    } catch (error) {
+        console.error("Error al obtener el detalle de la venta:", error);
+        res.status(500).json({ msg: "Error al obtener el detalle de la venta" });
+    }
+};
+
+const actualizarVenta = async (req, res) => {
+    try {
+        const { observacion, metodoPago } = req.body;
+
+        const ventaActualizada = await Vents.findByIdAndUpdate(
+            req.params.id,
+            { observacion, metodoPago },
+            { new: true }
+        );
+
+        if (!ventaActualizada) {
+            return res.status(404).json({ msg: "Venta no encontrada" });
+        }
+
+        res.status(200).json({ msg: "Venta actualizada correctamente", venta: ventaActualizada });
+    } catch (error) {
+        console.error("Error al actualizar la venta:", error);
+        res.status(500).json({ msg: "Error al actualizar la venta" });
+    }
+};
+
+/*const eliminarVenta = async (req, res) => { //revisar si es conveniente o no devolver la disponibilidad del producto
+    try {
+        const venta = await Vents.findById(req.params.id);
+
+        if (!venta) {
+            return res.status(404).json({ msg: "Venta no encontrada" });
+        }
+
+        for (const item of venta.productos) {
+            await Products.findByIdAndUpdate(item.producto, { estado: "Disponible" });
+        }
+
+        await venta.deleteOne();
+
+        res.status(200).json({ msg: "Venta eliminada correctamente y productos revertidos" });
+    } catch (error) {
+        console.error("Error al eliminar la venta:", error);
+        res.status(500).json({ msg: "Error al eliminar la venta" });
+    }
+};*/
+
+
+export { 
+    registrarVenta,
+    listarVentas,
+    detalleVenta,
+    actualizarVenta,
+    //eliminarVenta
+};
