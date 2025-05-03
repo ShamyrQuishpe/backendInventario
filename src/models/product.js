@@ -26,7 +26,7 @@ const productSchema = new Schema({
         require: true,
     },
     precio:{
-        type: String,
+        type: Number,
         require: true
     },
     responsable:{ 
