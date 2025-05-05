@@ -78,7 +78,7 @@ const eliminarCategoria = async (req,res) => {
     const {id} = req.params
 
     try{
-        const categoria = await Categories.findOneAndDelete(id);
+        const categoria = await Categories.findByIdAndDelete(id);
         if(!categoria){
             return res.status(400).json({ msg: "Categoria no encontrada"})
         }

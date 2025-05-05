@@ -1,7 +1,8 @@
 import Users from '../models/user.js'
-import mongoose from 'mongoose'
 import generarJWT from "../helpers/JWT.js"
-import bcrypt from 'bcryptjs'; 
+import jwt from 'jsonwebtoken'
+import sendMailToUser from '../config/nodemailer.js'
+
 
 const loginUsuario = async (req, res) => {
     const {email, password} = req.body
@@ -27,30 +28,51 @@ const loginUsuario = async (req, res) => {
 }
 
 const registroUsuario = async (req,res) => {
-    const {email, password} = req.body
+    const {email, nombre} = req.body
     if(Object.values(req.body).includes("")) return res.status(400),json({msg:"Lo sentimos, debes llenar todos los campos"})
+    
     const verificarEmailBDD = await Users.findOne({email})
     if(verificarEmailBDD) return res.status(400).json({msg:"Lo sentimos, ese email ya esta registrado"})
-    const nuevoUser = new Users(req.body)
-    nuevoUser.password = await nuevoUser.encrypPassword(password)
     
-    const token = nuevoUser.crearToken()
-    await nuevoUser.save()
-    
-    res.status(200).json({msg:"Usuario registrado exitosamente"})
-}
+    const contrasenaTemporal = Math.random().toString(36).slice(-8)
 
-const perfilUsuario = (req, res) => {
-    if (!req.user) {
-        return res.status(400).json({ error: "Usuario no encontrado" });
+
+    const nuevoUser = new Users(req.body)
+    nuevoUser.password = await nuevoUser.encrypPassword(contrasenaTemporal)
+    console.log(contrasenaTemporal)
+
+    const token = jwt.sign({ email: nuevoUser.email }, process.env.JWT_SECRET, { expiresIn: '1h'})
+
+    try{
+        await nuevoUser.save()
+
+        sendMailToUser(email, contrasenaTemporal, token, nombre)
+
+        res.status(200).json({msg:"Usuario registrado exitosamente y correo enviado"})
+
+    }catch(error){
+        console.error(error)
+        res.status(500).json({ error: 'Error al registrar el usuario o enviar el correo' });
     }
 
-    const usuario = { ...req.user };
-    delete usuario.token
-    delete usuario.__v;
-    res.status(200).json(usuario);
-};
-  
+    
+}
+
+const perfilUsuario = async (req, res) => {
+    try {
+        const id  = req.user._id;
+    
+        const usuario = await Users.findById(id).select('nombre apellido rol area');
+    
+        if (!usuario) {
+          return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+    
+        res.status(200).json(usuario);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }  
 
 const listarUsuarios = async (req,res) => {
     const user = await Users.find()
@@ -91,6 +113,33 @@ const nuevaPassword = async (req, res) => {
 
     res.status(200).json({ msg: "Password actualizado correctamente" });
 };
+
+const cambiarPasswordTemporal = async (req,res) => {
+    const { token } = req.params;
+    const { passwordnuevo } = req.body;
+  
+    if (!passwordnuevo || passwordnuevo.length < 6) {
+      return res.status(400).json({ msg: "La nueva contraseña debe tener al menos 6 caracteres" });
+    }
+  
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  
+      const usuarioBDD = await Users.findOne({ email: decoded.email });
+  
+      if (!usuarioBDD) {
+        return res.status(404).json({ msg: `Lo sentimos, no existe el usuario con email ${decoded.email}` });
+      }
+  
+      usuarioBDD.password = await usuarioBDD.encrypPassword(passwordnuevo);
+      await usuarioBDD.save();
+  
+      res.status(200).json({ msg: "Contraseña actualizada correctamente desde el enlace" });
+    } catch (error) {
+      return res.status(401).json({ msg: "Token inválido o expirado" });
+    }
+
+}
 
 
 const actualizarUsuario = async(req, res) => {
@@ -144,7 +193,8 @@ export {
     detalleUsuario,
     nuevaPassword,
     actualizarUsuario,
-    eliminarUsuario
+    eliminarUsuario,
+    cambiarPasswordTemporal
 }
 
 

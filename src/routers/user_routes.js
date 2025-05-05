@@ -12,12 +12,13 @@ import {
     detalleUsuario,
     nuevaPassword,
     eliminarUsuario,
-    actualizarUsuario
+    actualizarUsuario,
+    cambiarPasswordTemporal
 } from '../controllers/user_controller.js' 
 
 router.post('/login', loginUsuario)
 
-router.post('/registro',autenticar, verificarRol('Administrador'), registroUsuario)
+router.post('/registro',autenticar, verificarRol('Administrador', 'Bodeguero'), registroUsuario)
 
 router.get('/perfil', autenticar, perfilUsuario)
 
@@ -26,6 +27,8 @@ router.get('/users',autenticar, verificarRol('Administrador'), listarUsuarios)
 router.get('/users/:cedula',autenticar, verificarRol('Administrador'), detalleUsuario)
 
 router.put('/users/nuevapassword',autenticar, verificarRol('Administrador'), nuevaPassword)
+
+router.put('/cambiar-contrasena/:token', cambiarPasswordTemporal);
 
 router.put('/users/:cedula',autenticar, verificarRol('Administrador'), actualizarUsuario)
 

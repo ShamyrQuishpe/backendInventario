@@ -32,7 +32,6 @@ const userSchema = new Schema({
     area:{
         type:String,
         requiere:true,
-        unique:true,
     },
     rol:{
         type: String,
