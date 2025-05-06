@@ -118,8 +118,8 @@ const cambiarPasswordTemporal = async (req,res) => {
     const { token } = req.params;
     const { passwordnuevo } = req.body;
   
-    if (!passwordnuevo || passwordnuevo.length < 6) {
-      return res.status(400).json({ msg: "La nueva contraseña debe tener al menos 6 caracteres" });
+    if (!passwordnuevo || passwordnuevo.length > 6 && passwordnuevo.length < 12  ) {
+      return res.status(400).json({ msg: "La nueva contraseña debe tener al menos 6 caracteres y maximo 12" });
     }
   
     try {

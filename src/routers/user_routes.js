@@ -18,7 +18,7 @@ import {
 
 router.post('/login', loginUsuario)
 
-router.post('/registro',autenticar, verificarRol('Administrador', 'Bodeguero'), registroUsuario)
+router.post('/registro',autenticar, verificarRol('Administrador'), registroUsuario)
 
 router.get('/perfil', autenticar, perfilUsuario)
 

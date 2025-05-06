@@ -23,7 +23,7 @@ app.get('/',(req,res)=>{
     res.send("Server on")
 })
 
-app.use('/gt',routerUsers)
+app.use('/gt',routerUsers)  //poner subramas
 app.use('/gt',routerProducts)
 app.use('/gt',routerCategory)
 app.use('/gt',routerAccesory)
