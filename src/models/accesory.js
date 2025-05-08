@@ -14,7 +14,7 @@ const accesorySchema = new Schema({
         require: true
     },
     precioAccs:{
-        type: String,
+        type: Number,
         require: true
     },
     disponibilidadAccs:{

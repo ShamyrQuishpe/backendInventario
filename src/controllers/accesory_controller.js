@@ -46,7 +46,8 @@ const agregarAccesorio = async (req, res) => {
             codigoBarrasAccs: codigoBarrasGenerado,
             codigoUnicoAccs: codigoUnicoAccs.trim(),
             nombreAccs: nombreAccs.trim(),
-            precioAccs: precioAccs.trim()
+            precioAccs: precioAccs,
+            disponibilidadAccs: "Disponible"
         });
 
         await nuevoAccesorio.save();
@@ -88,7 +89,7 @@ const detalleAccesorio = async (req, res) => {
 
 const actualizarAccesorio = async (req, res) => {
     const { codigoBarras } = req.params;
-    const { codigoUnicoAccs, nombreAccs, precioAccs } = req.body;
+    const { codigoUnicoAccs, nombreAccs, precioAccs, disponibilidadAccs } = req.body;
 
     try {
         const accesorio = await Accesories.findOne({ codigoBarrasAccs: codigoBarras });
@@ -100,6 +101,8 @@ const actualizarAccesorio = async (req, res) => {
         accesorio.codigoUnicoAccs = codigoUnicoAccs || accesorio.codigoUnicoAccs;
         accesorio.nombreAccs = nombreAccs || accesorio.nombreAccs;
         accesorio.precioAccs = precioAccs || accesorio.precioAccs;
+        accesorio.disponibilidadAccs = disponibilidadAccs || accesorio.disponibilidadAccs;
+
 
         await accesorio.save();
 

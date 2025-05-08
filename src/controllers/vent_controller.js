@@ -1,10 +1,11 @@
 import Vents from '../models/vent.js'
 import Products from '../models/product.js'
+import Accesories from '../models/accesory.js'
 
 const registrarVenta = async (req, res) => {
     let productosModificados = [];
     try {
-        const { cliente, metodoPago, descripcion, productos } = req.body;
+        const { cliente, metodoPago, observacion, productos, accesorios, descuento = 0, numeroDocumento, descripcionDocumento } = req.body;
 
         if (!cliente || !cliente.cedula || !cliente.nombre) {
             return res.status(400).json({ msg: "Información del cliente incompleta" });
@@ -14,8 +15,16 @@ const registrarVenta = async (req, res) => {
             return res.status(400).json({ msg: "Debes seleccionar al menos un producto" });
         }
 
+        if (metodoPago.toLowerCase() === "transferencia") {
+            if (!numeroDocumento || !descripcionDocumento) {
+                return res.status(400).json({ msg: "Debes ingresar número y descripción del documento para pagos por transferencia" });
+            }
+        }
+
         const productosFinales = [];
         const productosParaActualizar = [];
+        const accesoriosFinales = [];
+        const accesoriosParaActualizar = [];
         let total = 0;
 
         // 1. Validar productos
@@ -33,7 +42,10 @@ const registrarVenta = async (req, res) => {
             productosFinales.push({
                 producto: producto._id,
                 codigoBarras: producto.codigoBarras,
-                nombreEquipo: producto.nombreEquipo, //agregar serial y codigo barras accesorios
+                nombreEquipo: producto.nombreEquipo,
+                capacidad: producto.capacidad,
+                color: producto.color,
+                codigoSerial: producto.codigoSerial,
                 precioUnitario: Number(producto.precio)
             });
 
@@ -41,11 +53,49 @@ const registrarVenta = async (req, res) => {
             total += Number(producto.precio);
         }
 
+        //Procesar accesorios (si existen)
+        
+        if(Array.isArray(accesorios) && accesorios.length > 0){
+            for(const item of accesorios){
+                const accs = await Accesories.findOne({ codigoBarrasAccs: item.codigoBarrasAccs})
+                if (!accs) {
+                    return res.status(404).json({ msg: `Producto con código ${item.codigoBarras} no encontrado` });
+                }
+
+                if (accs.disponibilidadAccs !== "Disponible") {
+                    return res.status(400).json({ msg: `Producto con código ${item.codigoBarras} ya fue vendido` });
+                }
+
+                accesoriosFinales.push({
+                    accesorio: accs._id,
+                    codigoBarrasAccs: accs.codigoBarrasAccs,
+                    nombreAccs: accs.nombreAccs,
+                    precioUnitario: Number(accs.precioAccs)
+
+                })
+
+                accesoriosParaActualizar.push(accs);
+                total += Number(accs.precioAccs)
+            }
+
+        }
+
+        if (descuento > total){
+            return res.status(400).json({ msg: "El descuento no puede ser mayor a el total de la venta"})
+        }
+        let totalFinal = total - descuento;
         // 2. Cambiar estado de productos a "No disponible"
         for (const p of productosParaActualizar) {
             p.estado = "No disponible";
             await p.save();
             productosModificados.push(p)
+        }
+
+        // 2. Cambiar estado de productos a "No disponible"
+        for (const a of accesoriosParaActualizar){
+            a.disponibilidadAccs = "No disponible";
+            await a.save();
+            productosModificados.push(a)
         }
 
         // 3. Guardar la venta
@@ -55,10 +105,14 @@ const registrarVenta = async (req, res) => {
                 nombre: cliente.nombre
             },
             metodoPago,
-            descripcion,
+            observacion,
             vendedor: req.user._id,
             productos: productosFinales,
-            total
+            accesorios: accesoriosFinales,
+            total: totalFinal,
+            descuento,
+            numeroDocumento,
+            descripcionDocumento
         });
 
         await nuevaVenta.save();
@@ -71,14 +125,18 @@ const registrarVenta = async (req, res) => {
     } catch (error) {
         
         console.log(productosModificados)
-        for (const producto of productosModificados) {
-            try {
-              console.log(`Revirtiendo producto ${producto._id}`);
-              await Products.findByIdAndUpdate(producto._id, { estado: "Disponible" });
-            } catch (e) {
-              console.error(`Error al revertir producto ${producto._id}:`, e.message);
+
+            for (const item of productosModificados) {
+                try {
+                    if (item.estado !== undefined) {
+                        await Products.findByIdAndUpdate(item._id, { estado: "Disponible" });
+                    } else if (item.disponibilidadAccs !== undefined) {
+                        await Accesories.findByIdAndUpdate(item._id, { disponibilidadAccs: "Disponible" });
+                    }
+                } catch (e) {
+                    console.error(`Error al revertir item ${item._id}:`, e.message);
+                }
             }
-        }
         console.error("Error al registrar la venta:", error);
 
         res.status(500).json({ msg: "Ocurrió un error al registrar la venta, los productos fueron revertidos" });
