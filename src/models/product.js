@@ -45,6 +45,10 @@ const productSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'category',
     },
+    locacion:{
+        type: String,
+        require: true
+    }
 })
 
 export default mongoose.model('Products',productSchema) 

@@ -20,6 +20,10 @@ const accesorySchema = new Schema({
     disponibilidadAccs:{
         type: String,
         require: true
+    },
+    locacionAccs:{
+        type: String,
+        require: true
     }
 })
 

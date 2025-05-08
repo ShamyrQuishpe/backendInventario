@@ -1,4 +1,6 @@
 import { Router } from "express";
+import autenticar from "../middlewares/auth.js";
+import verificarRol from "../middlewares/verifyrol.js";
 
 import {
     agregarAccesorio,
@@ -11,7 +13,7 @@ import {
 
 const router = Router()
 
-router.post('/agregarAccesorio', agregarAccesorio)
+router.post('/agregarAccesorio', autenticar, verificarRol('Administrador'), agregarAccesorio)
 
 router.get('/listarAccesorios', listarAccesorios)
 

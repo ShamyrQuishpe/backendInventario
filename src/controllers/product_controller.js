@@ -55,6 +55,7 @@ const agregarProducto = async (req, res) => {
             responsable: req.user._id,
             categoriaNombre: categoria._id,
             estado:"Disponible",
+            locacion: req.user.area,
         });
 
         console.log(req.user._id)
