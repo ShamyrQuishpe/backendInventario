@@ -24,7 +24,11 @@ const accesorySchema = new Schema({
     locacionAccs:{
         type: String,
         require: true
-    }
+    },
+    responsableAccs:{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
+    },
 })
 
 export default mongoose.model('Accesories', accesorySchema)
