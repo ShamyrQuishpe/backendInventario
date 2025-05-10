@@ -5,7 +5,7 @@ import Accesories from '../models/accesory.js'
 const registrarMovimiento = async (req, res) => {
     let locacionModificada = [];
     try{
-        const { productos, accesorios, areaLlegada, areaSalida } = req.body
+        const { productos, accesorios, areaLlegada, observacion } = req.body
         
         if (
             (!productos || !Array.isArray(productos) || productos.length === 0) &&
@@ -88,7 +88,8 @@ const registrarMovimiento = async (req, res) => {
             responsable: {
                 id: req.user._id,
                 nombreResponsable: req.user.nombre
-            }
+            },
+            observacion
         })
 
         await movimiento.save();
@@ -112,6 +113,74 @@ const registrarMovimiento = async (req, res) => {
     }
 }
 
+const listarMovimientos = async (req, res) => {
+    try {
+        const movimientos = await Movements.find();
+        res.status(200).json(movimientos);
+    } catch (error) {
+        res.status(500).json({ msg: "Error al listar movimientos", error });
+    }
+};
+
+const listarMovimientoPorId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const movimiento = await Movements.findById(id);
+
+        if (!movimiento) {
+            return res.status(404).json({ msg: "Movimiento no encontrado" });
+        }
+
+        res.status(200).json(movimiento);
+    } catch (error) {
+        res.status(500).json({ msg: "Error al obtener el movimiento", error });
+    }
+};
+
+const actualizarMovimiento = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { observacion } = req.body;
+
+        if (!observacion || typeof observacion !== "string") {
+            return res.status(400).json({ msg: "Debes enviar una observación válida" });
+        }
+
+        const movimientoActualizado = await Movements.findByIdAndUpdate(
+            id,
+            { observacion },
+            { new: true }
+        );
+
+        if (!movimientoActualizado) {
+            return res.status(404).json({ msg: "Movimiento no encontrado" });
+        }
+
+        res.status(200).json({ msg: "Observación actualizada", movimiento: movimientoActualizado });
+    } catch (error) {
+        res.status(500).json({ msg: "Error al actualizar la observación", error });
+    }
+};
+
+const eliminarMovimiento = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const movimientoEliminado = await Movements.findByIdAndDelete(id);
+
+        if (!movimientoEliminado) {
+            return res.status(404).json({ msg: "Movimiento no encontrado" });
+        }
+
+        res.status(200).json({ msg: "Movimiento eliminado correctamente" });
+    } catch (error) {
+        res.status(500).json({ msg: "Error al eliminar el movimiento", error });
+    }
+};
+
 export {
-    registrarMovimiento
+    registrarMovimiento,
+    listarMovimientos,
+    listarMovimientoPorId,
+    actualizarMovimiento,
+    eliminarMovimiento
 }
