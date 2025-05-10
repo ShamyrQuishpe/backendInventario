@@ -49,7 +49,10 @@ const agregarAccesorio = async (req, res) => {
             precioAccs: precioAccs,
             disponibilidadAccs: "Disponible",
             locacionAccs: req.user.area,
-            responsableAccs: req.user._id,
+            responsableAccs:{
+                id: req.user._id,
+                nombre: req.user.nombre
+            },
         });
 
         await nuevoAccesorio.save();

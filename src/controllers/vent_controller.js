@@ -11,8 +11,11 @@ const registrarVenta = async (req, res) => {
             return res.status(400).json({ msg: "Información del cliente incompleta" });
         }
 
-        if (!productos || !Array.isArray(productos) || productos.length === 0) {
-            return res.status(400).json({ msg: "Debes seleccionar al menos un producto" });
+        if (
+            (!productos || !Array.isArray(productos) || productos.length === 0) &&
+            (!accesorios || !Array.isArray(accesorios) || accesorios.length === 0)
+        ) {
+            return res.status(400).json({ msg: "Debes agregar al menos un producto o un accesorio" });
         }
 
         if (metodoPago.toLowerCase() === "transferencia") {
@@ -28,31 +31,32 @@ const registrarVenta = async (req, res) => {
         let total = 0;
 
         // 1. Validar productos
-        for (const item of productos) {
-            const producto = await Products.findOne({ codigoBarras: item.codigoBarras });
+        if(Array.isArray(productos) && productos.length > 0){
+            for (const item of productos) {
+                const producto = await Products.findOne({ codigoBarras: item.codigoBarras });
 
-            if (!producto) {
-                return res.status(404).json({ msg: `Producto con código ${item.codigoBarras} no encontrado` });
+                if (!producto) {
+                    return res.status(404).json({ msg: `Producto con código ${item.codigoBarras} no encontrado` });
+                }
+
+                if (producto.estado !== "Disponible") {
+                    return res.status(400).json({ msg: `Producto con código ${item.codigoBarras} ya fue vendido` });
+                }
+
+                productosFinales.push({
+                    producto: producto._id,
+                    codigoBarras: producto.codigoBarras,
+                    nombreEquipo: producto.nombreEquipo,
+                    capacidad: producto.capacidad,
+                    color: producto.color,
+                    codigoSerial: producto.codigoSerial,
+                    precioUnitario: Number(producto.precio)
+                });
+
+                productosParaActualizar.push(producto);
+                total += Number(producto.precio);
             }
-
-            if (producto.estado !== "Disponible") {
-                return res.status(400).json({ msg: `Producto con código ${item.codigoBarras} ya fue vendido` });
-            }
-
-            productosFinales.push({
-                producto: producto._id,
-                codigoBarras: producto.codigoBarras,
-                nombreEquipo: producto.nombreEquipo,
-                capacidad: producto.capacidad,
-                color: producto.color,
-                codigoSerial: producto.codigoSerial,
-                precioUnitario: Number(producto.precio)
-            });
-
-            productosParaActualizar.push(producto);
-            total += Number(producto.precio);
-        }
-
+        }    
         //Procesar accesorios (si existen)
         
         if(Array.isArray(accesorios) && accesorios.length > 0){
@@ -106,7 +110,11 @@ const registrarVenta = async (req, res) => {
             },
             metodoPago,
             observacion,
-            vendedor: req.user._id,
+            //vendedor: req.user._id,
+            vendedor: {
+                id: req.user._id,
+                nombreVendedor: req.user.nombre,
+            },
             productos: productosFinales,
             accesorios: accesoriosFinales,
             total: totalFinal,
@@ -175,7 +183,7 @@ const detalleVenta = async (req, res) => {
 
 const actualizarVenta = async (req, res) => {
     try {
-        const { observacion, metodoPago } = req.body;
+        const { observacion, metodoPago } = req.body; //actualizar cliente y descuento
 
         const ventaActualizada = await Vents.findByIdAndUpdate(
             req.params.id,

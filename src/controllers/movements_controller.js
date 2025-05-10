@@ -7,8 +7,11 @@ const registrarMovimiento = async (req, res) => {
     try{
         const { productos, accesorios, areaLlegada, areaSalida } = req.body
         
-        if (!productos || !Array.isArray(productos) || productos.length === 0) {
-            return res.status(400).json({ msg: "Debes agregar al menos un producto" });
+        if (
+            (!productos || !Array.isArray(productos) || productos.length === 0) &&
+            (!accesorios || !Array.isArray(accesorios) || accesorios.length === 0)
+        ) {
+            return res.status(400).json({ msg: "Debes agregar al menos un producto o un accesorio" });
         }
 
         const productosFinales = [];
@@ -16,27 +19,28 @@ const registrarMovimiento = async (req, res) => {
         const accesoriosFinales = [];
         const accesoriosParaActualizar = [];
 
-        for (const item of productos) {
-            const producto = await Products.findOne( {codigoBarras: item.codigoBarras} )
-            if(!producto) {
-                return res.status(404).json({ msg: `Producto con Codigo ${item.codigoBarras} no encontrado`})
+        if(Array.isArray(productos) && productos.length > 0){
+            for (const item of productos) {
+                const producto = await Products.findOne( {codigoBarras: item.codigoBarras} )
+                if(!producto) {
+                    return res.status(404).json({ msg: `Producto con Codigo ${item.codigoBarras} no encontrado`})
+                }
+
+                if(producto.locacion !== req.user.area){
+                    return res.status(400).json({msg: `El producto con Codigo ${item.codigoBarras} no está en el área de salida (${req.user.area}) actual, sino en ${producto.locacion}`});
+                }
+
+                productosFinales.push({
+                    producto: producto._id,
+                    codigoBarras: producto.codigoBarras,
+                    nombreEquipo: producto.nombreEquipo,
+                    capacidad: producto.capacidad,
+                    color: producto.color,
+                    codigoSerial: producto.codigoSerial
+                })
+
+                productosParaActualizar.push(producto)
             }
-
-            if(producto.locacion !== req.user.area){
-                return res.status(400).json({msg: `El producto con Codigo ${item.codigoBarras} no está en el área de salida (${req.user.area}) actual, sino en ${producto.locacion}`});
-            }
-
-            productosFinales.push({
-                producto: producto._id,
-                codigoBarras: producto.codigoBarras,
-                nombreEquipo: producto.nombreEquipo,
-                capacidad: producto.capacidad,
-                color: producto.color,
-                codigoSerial: producto.codigoSerial
-            })
-
-            productosParaActualizar.push(producto)
-
         }
 
 //Procesar accesorios (si existen)
@@ -81,7 +85,10 @@ const registrarMovimiento = async (req, res) => {
             accesorios: accesoriosFinales,
             areaSalida: req.user.area,
             areaLlegada,
-            responsable: req.user._id
+            responsable: {
+                id: req.user._id,
+                nombreResponsable: req.user.nombre
+            }
         })
 
         await movimiento.save();

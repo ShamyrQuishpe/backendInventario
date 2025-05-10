@@ -29,10 +29,16 @@ const productSchema = new Schema({
         type: Number,
         require: true
     },
-    responsable:{ 
-        type: mongoose.Schema.Types.ObjectId,
+    responsable: [
+        {
+            id: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
+            nombre: { type: String },
+        }
+    ],
+    /*responsable:{ 
+        type: mongoose.Schema.Types.ObjectId, //nombre
         ref: 'user'
-    },
+    },*/
     tipo:{
         type: String,
         require: true
@@ -41,13 +47,19 @@ const productSchema = new Schema({
         type: String,
         require: true
     },
-    categoriaNombre:{ 
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'category',
-    },
+    categoriaNombre: [
+        {
+            id: { type: mongoose.Schema.Types.ObjectId, ref: 'category'},
+            nombreCategoria: { type:String },
+        }
+    ],
     locacion:{
         type: String,
         require: true
+    },
+    fechaIngreso:{
+        type: Date,
+        default: Date.now
     }
 })
 

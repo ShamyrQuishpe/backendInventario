@@ -25,10 +25,16 @@ const accesorySchema = new Schema({
         type: String,
         require: true
     },
-    responsableAccs:{ 
-        type: mongoose.Schema.Types.ObjectId,
+    responsableAccs:[
+        {
+            id: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
+            nombre: { type: String },
+        }
+    ],
+    /*responsableAccs:{ 
+        type: mongoose.Schema.Types.ObjectId, //nombre
         ref: 'user'
-    },
+    },*/
 })
 
 export default mongoose.model('Accesories', accesorySchema)

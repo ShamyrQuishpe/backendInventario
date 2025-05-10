@@ -9,11 +9,17 @@ const ventSchema = new Schema({
         type: String,
         required: true
     },
-    vendedor: {
-        type: mongoose.Schema.Types.ObjectId,
+    vendedor:[
+        {
+            id: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+            nombreVendedor: { type :String }
+        }
+    ],
+    /*vendedor: {
+        type: mongoose.Schema.Types.ObjectId, //nombre y locacion
         ref: 'user',
         required: true
-    },
+    },*/
     productos: [
         {
           producto: { type: mongoose.Schema.Types.ObjectId, ref: 'Products' },

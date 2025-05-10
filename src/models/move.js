@@ -22,10 +22,16 @@ const moveSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    responsable:{
-        type: mongoose.Schema.Types.ObjectId,
+    responsable: [
+        {
+            id: { type: mongoose.Schema.Types.ObjectId, ref: 'Accesories' },
+            nombreResponsable: { type: String },
+        }
+    ],
+    /*responsable:{
+        type: mongoose.Schema.Types.ObjectId, //nombre
         ref: 'user'
-    },
+    },*/
     areaLlegada:{
         type: String,
         require: true,
