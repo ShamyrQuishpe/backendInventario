@@ -15,11 +15,6 @@ const ventSchema = new Schema({
             nombreVendedor: { type :String }
         }
     ],
-    /*vendedor: {
-        type: mongoose.Schema.Types.ObjectId, //nombre y locacion
-        ref: 'user',
-        required: true
-    },*/
     productos: [
         {
           producto: { type: mongoose.Schema.Types.ObjectId, ref: 'Products' },

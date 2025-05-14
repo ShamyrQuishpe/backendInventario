@@ -28,10 +28,6 @@ const moveSchema = new Schema({
             nombreResponsable: { type: String },
         }
     ],
-    /*responsable:{
-        type: mongoose.Schema.Types.ObjectId, //nombre
-        ref: 'user'
-    },*/
     areaLlegada:{
         type: String,
         require: true,

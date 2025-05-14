@@ -9,6 +9,8 @@ import {
     eliminarProducto 
 } from "../controllers/product_controller.js";
 
+import { listarProductosPorFecha } from "../controllers/visualizaciones_controller.js";
+
 const router = Router()
 
 
@@ -17,6 +19,8 @@ router.post('/agregarProducto', autenticar, verificarRol('Administrador'),agrega
 router.get('/listarProductos', listarProductos)
 
 router.get('/listarProducto/:codigoBarras', listarProductoPorCodigoBarras)
+
+router.get('/productos', listarProductosPorFecha)
 
 router.put('/actualizarProducto/:codigoBarras', actualizarProducto)
 

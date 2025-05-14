@@ -2,7 +2,7 @@ import mongoose, {Schema, model} from 'mongoose'
 
 const productSchema = new Schema({
     codigoBarras:{
-        type: String,
+        type: String, 
         require: true,
     },
     codigoUnico:{
@@ -35,10 +35,6 @@ const productSchema = new Schema({
             nombre: { type: String },
         }
     ],
-    /*responsable:{ 
-        type: mongoose.Schema.Types.ObjectId, //nombre
-        ref: 'user'
-    },*/
     tipo:{
         type: String,
         require: true

@@ -31,10 +31,10 @@ const accesorySchema = new Schema({
             nombre: { type: String },
         }
     ],
-    /*responsableAccs:{ 
-        type: mongoose.Schema.Types.ObjectId, //nombre
-        ref: 'user'
-    },*/
+    fechaIngreso:{
+        type: Date,
+        default: Date.now
+    }
 })
 
 export default mongoose.model('Accesories', accesorySchema)

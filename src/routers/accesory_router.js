@@ -11,6 +11,8 @@ import {
 
 } from "../controllers/accesory_controller.js"
 
+import { listarAccesoriosPorFecha } from "../controllers/visualizaciones_controller.js";
+
 const router = Router()
 
 router.post('/agregarAccesorio', autenticar, verificarRol('Administrador'), agregarAccesorio)
@@ -18,6 +20,8 @@ router.post('/agregarAccesorio', autenticar, verificarRol('Administrador'), agre
 router.get('/listarAccesorios', listarAccesorios)
 
 router.get('/listarAccesorio/:codigoBarras', detalleAccesorio)
+
+router.get('/accesorios', listarAccesoriosPorFecha)
 
 router.put('/actualizarAccesorio/:codigoBarras', actualizarAccesorio)
 
