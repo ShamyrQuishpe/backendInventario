@@ -5,19 +5,12 @@ import Accesories from '../models/accesory.js'
 
 const listarMovimientosPorFecha = async (req, res) => {
     try {
-        const { fecha } = req.query;
+        const { desde, hasta } = req.query;
 
-        let fechaInicio;
-        let fechaFin;
+        let fechaInicio = desde ? new Date(desde) : new Date();
+        fechaInicio.setHours(0, 0, 0, 0);
 
-        if (fecha) {
-            fechaInicio = new Date(fecha);
-        } else {
-            const hoy = new Date();
-            fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        }
-
-        fechaFin = new Date(fechaInicio);
+        let fechaFin = hasta ? new Date(hasta) : new Date(fechaInicio);
         fechaFin.setHours(23, 59, 59, 999);
 
         const movimientos = await Movements.find({
@@ -36,20 +29,12 @@ const listarMovimientosPorFecha = async (req, res) => {
 
 const listarProductosPorFecha = async (req, res) => {
     try {
-        const { fecha } = req.query;
+        const { desde, hasta } = req.query;
 
-        let fechaInicio;
-        let fechaFin;
+        let fechaInicio = desde ? new Date(desde) : new Date();
+        fechaInicio.setHours(0, 0, 0, 0);
 
-        if (fecha) {
-            fechaInicio = new Date(fecha);
-        } else {
-            const hoy = new Date();
-            fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        }
-
-        // Fin del día
-        fechaFin = new Date(fechaInicio);
+        let fechaFin = hasta ? new Date(hasta) : new Date(fechaInicio);
         fechaFin.setHours(23, 59, 59, 999);
 
         const productos = await Products.find({
@@ -68,19 +53,12 @@ const listarProductosPorFecha = async (req, res) => {
 
 const listarVentasPorFecha = async (req, res) => {
     try {
-        const { fecha } = req.query;
+        const { desde, hasta } = req.query;
 
-        let fechaInicio;
-        let fechaFin;
+        let fechaInicio = desde ? new Date(desde) : new Date();
+        fechaInicio.setHours(0, 0, 0, 0);
 
-        if (fecha) {
-            fechaInicio = new Date(fecha);
-        } else {
-            const hoy = new Date();
-            fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        }
-
-        fechaFin = new Date(fechaInicio);
+        let fechaFin = hasta ? new Date(hasta) : new Date(fechaInicio);
         fechaFin.setHours(23, 59, 59, 999);
 
         const ventas = await Vents.find({
@@ -99,19 +77,12 @@ const listarVentasPorFecha = async (req, res) => {
 
 const listarAccesoriosPorFecha = async (req, res) => {
     try {
-        const { fecha } = req.query;
+        const { desde, hasta } = req.query;
 
-        let fechaInicio;
-        let fechaFin;
+        let fechaInicio = desde ? new Date(desde) : new Date();
+        fechaInicio.setHours(0, 0, 0, 0);
 
-        if (fecha) {
-            fechaInicio = new Date(fecha);
-        } else {
-            const hoy = new Date();
-            fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        }
-
-        fechaFin = new Date(fechaInicio);
+        let fechaFin = hasta ? new Date(hasta) : new Date(fechaInicio);
         fechaFin.setHours(23, 59, 59, 999);
 
         const accesorios = await Accesories.find({
@@ -132,42 +103,98 @@ const listarStockDisponible = async (req, res) => {
     try {
         const { nombre, capacidad, categoria } = req.query;
 
-        // === Filtro para productos ===
-        const filtroProductos = {
+        // === Filtro base para productos ===
+        const matchProductos = {
             estado: 'Disponible'
         };
 
         if (nombre) {
-            filtroProductos.nombreEquipo = { $regex: nombre, $options: 'i' };
+            matchProductos.nombreEquipo = { $regex: nombre, $options: 'i' };
         }
 
         if (capacidad) {
-            filtroProductos.capacidad = capacidad;
+            matchProductos.capacidad = capacidad;
         }
 
         if (categoria) {
-            filtroProductos['categoriaNombre.nombreCategoria'] = { $regex: categoria, $options: 'i' };
+            matchProductos['categoriaNombre.nombreCategoria'] = { $regex: categoria, $options: 'i' };
         }
 
-        const productos = await Products.find(filtroProductos);
+        const productosAgrupados = await Products.aggregate([
+            { $match: matchProductos },
+            {
+                $group: {
+                    _id: '$codigoModelo',
+                    cantidad: { $sum: 1 },
+                    nombreEquipo: { $first: '$nombreEquipo' },
+                    capacidad: { $first: '$capacidad' },
+                    color: { $first: '$color' },
+                    precio: { $first: '$precio' },
+                    tipo: { $first: '$tipo' },
+                    categoria: { $first: { $arrayElemAt: ['$categoriaNombre.nombreCategoria', 0] } },
+                    locacion: { $first: '$locacion' }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    codigoModelo: '$_id',
+                    nombreEquipo: 1,
+                    capacidad: 1,
+                    color: 1,
+                    precio: 1,
+                    tipo: 1,
+                    categoria: 1,
+                    locacion: 1,
+                    cantidad: 1
+                }
+            },
+            {
+                $sort: { cantidad: -1 } // Opcional: ordena por cantidad descendente
+            }
+        ]);
 
-        // === Filtro para accesorios ===
-        const filtroAccesorios = {
+        // === Filtro base para accesorios ===
+        const matchAccesorios = {
             disponibilidadAccs: 'Disponible'
         };
 
         if (nombre) {
-            filtroAccesorios.nombreAccs = { $regex: nombre, $options: 'i' };
+            matchAccesorios.nombreAccs = { $regex: nombre, $options: 'i' };
         }
 
-        const accesorios = await Accesories.find(filtroAccesorios);
+        const accesoriosAgrupados = await Accesories.aggregate([
+            { $match: matchAccesorios },
+            {
+                $group: {
+                    _id: '$codigoModeloAccs',
+                    cantidad: { $sum: 1 },
+                    nombreAccs: { $first: '$nombreAccs' },
+                    precioAccs: { $first: '$precioAccs' },
+                    locacionAccs: { $first: '$locacionAccs' }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    codigoModelo: '$_id',
+                    nombreAccs: 1,
+                    precioAccs: 1,
+                    locacionAccs: 1,
+                    cantidad: 1
+                }
+            },
+            {
+                $sort: { cantidad: -1 } // Opcional
+            }
+        ]);
 
         res.status(200).json({
-            productos,
-            accesorios
+            productos: productosAgrupados,
+            accesorios: accesoriosAgrupados
         });
     } catch (error) {
-        console.error('Error al listar stock disponible:', error);
+        console.error('Error al listar stock disponible agrupado:', error);
         res.status(500).json({ message: 'Error del servidor' });
     }
 };

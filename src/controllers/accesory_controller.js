@@ -36,7 +36,7 @@ const generarCodigoBarrasAccesorio = async () => {
 };
 
 const agregarAccesorio = async (req, res) => {
-    const { codigoUnicoAccs, nombreAccs, precioAccs } = req.body;
+    const { codigoModeloAccs, nombreAccs, precioAccs } = req.body;
 
 
     try {
@@ -44,7 +44,7 @@ const agregarAccesorio = async (req, res) => {
 
         const nuevoAccesorio = new Accesories({
             codigoBarrasAccs: codigoBarrasGenerado,
-            codigoUnicoAccs: codigoUnicoAccs.trim(),
+            codigoModeloAccs: codigoModeloAccs.trim(),
             nombreAccs: nombreAccs.trim(),
             precioAccs: precioAccs,
             disponibilidadAccs: "Disponible",

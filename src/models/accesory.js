@@ -5,7 +5,7 @@ const accesorySchema = new Schema({
         type: String,
         require: true
     },
-    codigoUnicoAccs:{
+    codigoModeloAccs:{
         type: String,
         require: true
     },

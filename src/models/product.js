@@ -5,7 +5,7 @@ const productSchema = new Schema({
         type: String, 
         require: true,
     },
-    codigoUnico:{
+    codigoModelo:{
         type: String,
         require: true,
     },

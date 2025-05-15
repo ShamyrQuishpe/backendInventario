@@ -4,6 +4,6 @@ import connection from './database.js'
 connection()
 
 app.listen(app.get('port'),()=>{
-    console.log(`Ser ok on http://localhost:${app.get('port')}`)
+    console.log(`Server ok`)
 })
 

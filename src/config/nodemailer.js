@@ -15,7 +15,7 @@ let transporter  = nodemailer.createTransport({
 
 const sendMailToUser = (userMail, contrasenaTemporal, token, nombre) => {
     
-    const link = `http://localhost:3000/gt/cambiar-contrasena/${token}`
+    const link = `http://localhost:5173/reset/${token}`
 
     const html = `
     <html>
