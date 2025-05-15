@@ -13,7 +13,8 @@ import {
     nuevaPassword,
     eliminarUsuario,
     actualizarUsuario,
-    cambiarPasswordTemporal
+    cambiarPasswordTemporal,
+    listarAreasUnicas
 } from '../controllers/user_controller.js' 
 
 router.post('/login', loginUsuario)
@@ -25,6 +26,8 @@ router.get('/perfil', autenticar, perfilUsuario)
 router.get('/users',autenticar, verificarRol('Administrador'), listarUsuarios)
 
 router.get('/users/:cedula',autenticar, verificarRol('Administrador'), detalleUsuario)
+
+router.get('/areasunicas', listarAreasUnicas)
 
 router.put('/users/nuevapassword',autenticar, verificarRol('Administrador'), nuevaPassword)
 

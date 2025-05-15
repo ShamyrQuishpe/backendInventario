@@ -79,6 +79,16 @@ const listarUsuarios = async (req,res) => {
     res.status(200).json(user)
 }
 
+const listarAreasUnicas = async (req, res) => {
+    try {
+        const areas = await Users.distinct('area');
+        res.status(200).json(areas);
+    } catch (error) {
+        console.error('Error al listar áreas únicas:', error);
+        res.status(500).json({ message: 'Error del servidor' });
+    }
+};
+
 const detalleUsuario = async (req,res) => { //revisar para buscar por correo o bien agregar cedula
     const {cedula} = req.params
 
@@ -194,7 +204,8 @@ export {
     nuevaPassword,
     actualizarUsuario,
     eliminarUsuario,
-    cambiarPasswordTemporal
+    cambiarPasswordTemporal,
+    listarAreasUnicas
 }
 
 
