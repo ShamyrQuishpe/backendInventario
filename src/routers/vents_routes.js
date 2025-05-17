@@ -16,7 +16,7 @@ const router = Router()
 
 router.post('/registrarVenta', autenticar, verificarRol('Administrador'), registrarVenta)
 
-router.get('/listarVentas', listarVentas)
+router.get('/listarVentas', listarVentas) //mo usa el admin
 
 router.get('/detalleVenta/:id', detalleVenta)
 

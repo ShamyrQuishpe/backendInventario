@@ -177,7 +177,7 @@ const listarStockDisponible = async (req, res) => {
             {
                 $project: {
                     _id: 0,
-                    codigoModelo: '$_id',
+                    codigoModeloAccs: '$_id',
                     nombreAccs: 1,
                     precioAccs: 1,
                     locacionAccs: 1,
