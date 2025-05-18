@@ -26,7 +26,6 @@ const listarMovimientosPorFecha = async (req, res) => {
         res.status(500).json({ message: 'Error del servidor' });
     }
 };
-
 const listarProductosPorFecha = async (req, res) => {
     try {
         const { desde, hasta } = req.query;
@@ -34,8 +33,15 @@ const listarProductosPorFecha = async (req, res) => {
         let fechaInicio = desde ? new Date(desde) : new Date();
         fechaInicio.setHours(0, 0, 0, 0);
 
-        let fechaFin = hasta ? new Date(hasta) : new Date(fechaInicio);
-        fechaFin.setHours(23, 59, 59, 999);
+        let fechaFin;
+        if (hasta) {
+            fechaFin = new Date(hasta);
+            fechaFin.setDate(fechaFin.getDate() + 1); // suma un día
+            fechaFin.setHours(0, 0, 0, -1); // un milisegundo antes de medianoche
+        } else {
+            fechaFin = new Date(fechaInicio);
+            fechaFin.setHours(23, 59, 59, 999);
+        }
 
         const productos = await Products.find({
             fechaIngreso: {
