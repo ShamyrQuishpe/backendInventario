@@ -26,21 +26,34 @@ const listarMovimientosPorFecha = async (req, res) => {
         res.status(500).json({ message: 'Error del servidor' });
     }
 };
+
 const listarProductosPorFecha = async (req, res) => {
     try {
         const { desde, hasta } = req.query;
 
-        let fechaInicio = desde ? new Date(desde) : new Date();
-        fechaInicio.setHours(0, 0, 0, 0);
+        let fechaInicio, fechaFin;
 
-        let fechaFin;
-        if (hasta) {
-            fechaFin = new Date(hasta);
-            fechaFin.setDate(fechaFin.getDate() + 1); // suma un día
-            fechaFin.setHours(0, 0, 0, -1); // un milisegundo antes de medianoche
-        } else {
-            fechaFin = new Date(fechaInicio);
+        // CASO: no se pasan fechas → por defecto día actual
+        if (!desde && !hasta) {
+            fechaInicio = new Date();
+            fechaInicio.setHours(0, 0, 0, 0);
+
+            fechaFin = new Date();
             fechaFin.setHours(23, 59, 59, 999);
+        } else {
+            // fechaInicio: si se pasó, se usa. Si no, se usa hoy.
+            fechaInicio = desde ? new Date(desde) : new Date();
+            fechaInicio.setHours(0, 0, 0, 0);
+
+            if (hasta) {
+                // Aquí está el cambio CLAVE: usar la misma fecha hasta y setear 23:59:59.999
+                fechaFin = new Date(hasta);
+                fechaFin.setHours(23, 59, 59, 999); // Incluye todo el día hasta el final
+            } else {
+                // Si no se pasa "hasta", usar final del día "desde"
+                fechaFin = new Date(fechaInicio);
+                fechaFin.setHours(23, 59, 59, 999);
+            }
         }
 
         const productos = await Products.find({
