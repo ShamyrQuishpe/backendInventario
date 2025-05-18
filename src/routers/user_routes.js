@@ -27,11 +27,11 @@ router.get('/users',autenticar, verificarRol('Administrador'), listarUsuarios)
 
 router.get('/users/:cedula',autenticar, verificarRol('Administrador'), detalleUsuario)
 
-router.get('/areasunicas', listarAreasUnicas)
+router.get('/areasunicas', autenticar, listarAreasUnicas) //aun no se ocupa
 
-router.put('/users/nuevapassword',autenticar, verificarRol('Administrador'), nuevaPassword)
+router.put('/users/nuevapassword',autenticar, verificarRol('Administrador'), nuevaPassword) //aun no se ocupa
 
-router.put('/cambiar-contrasena/:token', cambiarPasswordTemporal);
+router.put('/cambiar-contrasena/:token', cambiarPasswordTemporal); 
 
 router.put('/users/:cedula',autenticar, verificarRol('Administrador'), actualizarUsuario)
 

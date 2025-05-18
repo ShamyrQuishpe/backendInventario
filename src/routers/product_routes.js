@@ -15,19 +15,19 @@ import { listarProductosPorFecha } from "../controllers/visualizaciones_controll
 const router = Router()
 
 
-router.post('/agregarProducto', autenticar, verificarRol('Administrador'),agregarProducto)
+router.post('/agregarProducto', autenticar, verificarRol('Administrador', 'Bodeguero'), agregarProducto)
 
-router.get('/listarProductos', listarProductos) 
+router.get('/listarProductos', autenticar, verificarRol('Administrador', 'Bodeguero'), listarProductos) 
 
-router.get('/listarProducto/:codigoBarras', listarProductoPorCodigoBarras)
+router.get('/listarProducto/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), listarProductoPorCodigoBarras) //aun no se usa front ni movil
 
-router.get('/productosBodeguero', autenticar, verificarRol('Administrador'), listarProductosPorResponsable)
+router.get('/productosBodeguero', autenticar, verificarRol('Bodeguero'), listarProductosPorResponsable) // aun no ocupa movil
 
-router.get('/productos', listarProductosPorFecha)
+router.get('/productos', autenticar, verificarRol('Administrador'),listarProductosPorFecha)
 
-router.put('/actualizarProducto/:codigoBarras', actualizarProducto)
+router.put('/actualizarProducto/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), actualizarProducto) // movil aun no ocupa
 
-router.delete('/eliminarProducto/:codigoBarras', eliminarProducto)
+router.delete('/eliminarProducto/:codigoBarras', autenticar, verificarRol('Administrador'), eliminarProducto) // movil aun no ocupa
 
 
 export default router

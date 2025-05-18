@@ -6,6 +6,6 @@ import { listarStockDisponible } from "../controllers/visualizaciones_controller
 
 const router = Router()
 
-router.get('/stockDisponible',listarStockDisponible)
+router.get('/stockDisponible', autenticar, verificarRol('Administrador', 'Vendedor'), listarStockDisponible) //aun no se ocupa
 
 export default router

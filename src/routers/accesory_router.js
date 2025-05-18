@@ -16,18 +16,18 @@ import { listarAccesoriosPorFecha } from "../controllers/visualizaciones_control
 
 const router = Router()
 
-router.post('/agregarAccesorio', autenticar, verificarRol('Administrador'), agregarAccesorio)
+router.post('/agregarAccesorio', autenticar, verificarRol('Administrador', 'Bodeguero'), agregarAccesorio) 
 
-router.get('/listarAccesorios', listarAccesorios)
+router.get('/listarAccesorios', autenticar, verificarRol('Administrador', 'Bodeguero'), listarAccesorios)
 
-router.get('/listarAccesorio/:codigoBarras', detalleAccesorio)
+router.get('/listarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), detalleAccesorio) // aun no se ocupa front ni movil
 
-router.get('/accesoriosBodeguero', autenticar, verificarRol('Administrador'), listarAccesoriosPorResponsable)
+router.get('/accesoriosBodeguero', autenticar, verificarRol('Administrador', 'Bodeguero'), listarAccesoriosPorResponsable) // aun no se ocupa movil
 
-router.get('/accesorios', listarAccesoriosPorFecha)
+router.get('/accesorios',autenticar, verificarRol('Administrador'), listarAccesoriosPorFecha)
 
-router.put('/actualizarAccesorio/:codigoBarras', actualizarAccesorio)
+router.put('/actualizarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), actualizarAccesorio) // aun no se ocupa movil
 
-router.delete('/eliminarAccesorio/:codigoBarras', eliminarAccesorio)
+router.delete('/eliminarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador'), eliminarAccesorio) // aun no se ocupa movil
 
 export default router

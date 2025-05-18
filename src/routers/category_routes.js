@@ -1,4 +1,6 @@
 import { Router } from "express";
+import autenticar from "../middlewares/auth.js";
+import verificarRol from "../middlewares/verifyrol.js";
 
 import{
     crearCategoria,
@@ -11,14 +13,14 @@ import{
 
 const router = Router()
 
-router.post('/crearCategoria', crearCategoria)
+router.post('/crearCategoria', autenticar, verificarRol('Administrador'), crearCategoria) 
 
-router.get('/listarCategorias', listarCategorias)
+router.get('/listarCategorias', autenticar, verificarRol('Administrador'), listarCategorias)
 
-router.get('/listarCategoria/:id', obtenerCategoriasPorId)
+router.get('/listarCategoria/:id', autenticar, verificarRol('Administrador'), obtenerCategoriasPorId)
 
-router.put('/actualizarCategoria/:id', actualizarCategorias)
+router.put('/actualizarCategoria/:id', autenticar, verificarRol('Administrador'), actualizarCategorias)
 
-router.delete('/eliminarCategoria/:id', eliminarCategoria)
+router.delete('/eliminarCategoria/:id', autenticar, verificarRol('Administrador'), eliminarCategoria)
 
 export default router

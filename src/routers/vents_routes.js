@@ -14,16 +14,16 @@ import { listarVentasPorFecha } from "../controllers/visualizaciones_controller.
 
 const router = Router()
 
-router.post('/registrarVenta', autenticar, verificarRol('Administrador'), registrarVenta)
+router.post('/registrarVenta', autenticar, verificarRol('Administrador', 'Vendedor'), registrarVenta)
 
-router.get('/listarVentasVendedor', autenticar, verificarRol('Administrador'), listarVentasPorVendedor) //mo usa el admin
+router.get('/listarVentasVendedor', autenticar, verificarRol('Vendedor'), listarVentasPorVendedor) 
 
-router.get('/detalleVenta/:id', detalleVenta)
+router.get('/detalleVenta/:id',autenticar, verificarRol('Administrador', 'Vendedor'), detalleVenta) //aun no se ocupa
 
-router.get('/ventas', listarVentasPorFecha)
+router.get('/ventas', autenticar, verificarRol('Administrador'), listarVentasPorFecha)
 
-router.put('/actualizarVenta/:id', actualizarVenta)
+router.put('/actualizarVenta/:id', autenticar, verificarRol('Vendedor'), actualizarVenta) //aun no se ocupa
 
-router.delete('/eliminarVenta/:id', eliminarVenta )
+router.delete('/eliminarVenta/:id', autenticar, verificarRol('Administrador'), eliminarVenta ) //aun no se ocupa
 
 export default router
