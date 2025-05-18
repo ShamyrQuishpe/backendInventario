@@ -5,6 +5,7 @@ import verificarRol from "../middlewares/verifyrol.js";
 import {
     agregarAccesorio,
     listarAccesorios,
+    listarAccesoriosPorResponsable,
     detalleAccesorio,
     actualizarAccesorio,
     eliminarAccesorio
@@ -20,6 +21,8 @@ router.post('/agregarAccesorio', autenticar, verificarRol('Administrador'), agre
 router.get('/listarAccesorios', listarAccesorios)
 
 router.get('/listarAccesorio/:codigoBarras', detalleAccesorio)
+
+router.get('/accesoriosBodeguero', autenticar, verificarRol('Administrador'), listarAccesoriosPorResponsable)
 
 router.get('/accesorios', listarAccesoriosPorFecha)
 

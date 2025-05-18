@@ -95,6 +95,37 @@ const listarProductos = async (req, res) => {
     }
 };
 
+const listarProductosPorResponsable = async (req, res) => {
+    try {
+        const { desde, hasta } = req.query;
+
+        let fechaInicio = desde ? new Date(desde) : new Date();
+        fechaInicio.setHours(0, 0, 0, 0);
+
+        let fechaFin = hasta ? new Date(hasta) : new Date(fechaInicio);
+        fechaFin.setHours(23, 59, 59, 999);
+
+        const userID = req.user._id;
+
+        if(!userID){
+            return res.status(401).json({ message: 'Usuario no autenticado' });
+        }
+
+        const productos = await Products.find({
+            fechaIngreso: {
+                $gte: fechaInicio,
+                $lte: fechaFin
+            },
+            'responsable.id': userID,
+        });
+
+        res.status(200).json(productos);
+    } catch (error) {
+        console.error('Error al listar productos por fecha:', error);
+        res.status(500).json({ message: 'Error del servidor' });
+    }
+};
+
 const listarProductoPorCodigoBarras = async (req, res) => {
     const { codigoBarras } = req.params;
 
@@ -173,6 +204,7 @@ export {
     agregarProducto,
     listarProductos,
     listarProductoPorCodigoBarras,
+    listarProductosPorResponsable,
     actualizarProducto,
     eliminarProducto
 }

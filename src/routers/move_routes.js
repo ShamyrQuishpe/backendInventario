@@ -4,7 +4,7 @@ import verificarRol from "../middlewares/verifyrol.js";
 
 import {
     registrarMovimiento,
-    listarMovimientos,
+    listarMovimientosPorResponsable,
     listarMovimientoPorId,
     actualizarMovimiento,
     eliminarMovimiento
@@ -16,7 +16,7 @@ const router = Router()
 
 router.post('/registrarMovimiento', autenticar, verificarRol('Administrador'), registrarMovimiento)
 
-router.get('/listarMovimientos', listarMovimientos)
+router.get('/movimientosBodeguero', listarMovimientosPorResponsable)
 
 router.get('/listarMovimiento/:id', listarMovimientoPorId)
 

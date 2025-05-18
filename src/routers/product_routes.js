@@ -4,7 +4,8 @@ import verificarRol from "../middlewares/verifyrol.js";
 import { 
     agregarProducto, 
     listarProductos, 
-    listarProductoPorCodigoBarras, 
+    listarProductoPorCodigoBarras,
+    listarProductosPorResponsable,
     actualizarProducto, 
     eliminarProducto 
 } from "../controllers/product_controller.js";
@@ -16,13 +17,13 @@ const router = Router()
 
 router.post('/agregarProducto', autenticar, verificarRol('Administrador'),agregarProducto)
 
-router.get('/listarProductos', listarProductos) //Si ocupa admin
+router.get('/listarProductos', listarProductos) 
 
 router.get('/listarProducto/:codigoBarras', listarProductoPorCodigoBarras)
 
-router.get('/productos', listarProductosPorFecha)
+router.get('/productosBodeguero', autenticar, verificarRol('Administrador'), listarProductosPorResponsable)
 
-router.get('/productosBodeguero', listarProductosPorFecha) //Llebar el id y me va a mostrar por id
+router.get('/productos', listarProductosPorFecha)
 
 router.put('/actualizarProducto/:codigoBarras', actualizarProducto)
 

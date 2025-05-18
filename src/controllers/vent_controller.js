@@ -150,19 +150,34 @@ const registrarVenta = async (req, res) => {
         res.status(500).json({ msg: "Ocurrió un error al registrar la venta, los productos fueron revertidos" });
     }
 };
-
-const listarVentas = async (req, res) => {
+const listarVentasPorVendedor = async (req, res) => {
     try {
-        const ventas = await Vents.find()
+        const { desde, hasta } = req.query;
 
-        if(ventas.length === 0){
-            return res.status(400).json({ msg: "No se encontraron ventas"})
+        let fechaInicio = desde ? new Date(desde) : new Date();
+        fechaInicio.setHours(0, 0, 0, 0);
+
+        let fechaFin = hasta ? new Date(hasta) : new Date(fechaInicio);
+        fechaFin.setHours(23, 59, 59, 999);
+
+        const userID = req.user._id;
+
+        if(!userID){
+            return res.status(401).json({ message: 'Usuario no autenticado' });
         }
+
+        const ventas = await Vents.find({
+            fecha: {
+                $gte: fechaInicio,
+                $lte: fechaFin
+            },
+            'vendedor.id': userID,
+        });
 
         res.status(200).json(ventas);
     } catch (error) {
-        console.error("Error al listar ventas:", error);
-        res.status(500).json({ msg: "Error al listar las ventas" });
+        console.error('Error al listar ventas por vendedor:', error);
+        res.status(500).json({ message: 'Error del servidor' });
     }
 };
 
@@ -202,7 +217,7 @@ const actualizarVenta = async (req, res) => {
     }
 };
 
-/*const eliminarVenta = async (req, res) => { //revisar si es conveniente o no devolver la disponibilidad del producto
+const eliminarVenta = async (req, res) => { //revisar si es conveniente o no devolver la disponibilidad del producto
     try {
         const venta = await Vents.findById(req.params.id);
 
@@ -221,13 +236,13 @@ const actualizarVenta = async (req, res) => {
         console.error("Error al eliminar la venta:", error);
         res.status(500).json({ msg: "Error al eliminar la venta" });
     }
-};*/
+};
 
 
 export { 
     registrarVenta,
-    listarVentas,
+    listarVentasPorVendedor,
     detalleVenta,
     actualizarVenta,
-    //eliminarVenta
+    eliminarVenta
 };

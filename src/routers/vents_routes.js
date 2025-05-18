@@ -4,10 +4,10 @@ import verificarRol from "../middlewares/verifyrol.js";
 
 import { 
     registrarVenta,
-    listarVentas,
+    listarVentasPorVendedor,
     detalleVenta,
     actualizarVenta,
-    //eliminarVenta
+    eliminarVenta
 } from "../controllers/vent_controller.js";
 
 import { listarVentasPorFecha } from "../controllers/visualizaciones_controller.js";
@@ -16,7 +16,7 @@ const router = Router()
 
 router.post('/registrarVenta', autenticar, verificarRol('Administrador'), registrarVenta)
 
-router.get('/listarVentas', listarVentas) //mo usa el admin
+router.get('/listarVentasVendedor', autenticar, verificarRol('Administrador'), listarVentasPorVendedor) //mo usa el admin
 
 router.get('/detalleVenta/:id', detalleVenta)
 
@@ -24,6 +24,6 @@ router.get('/ventas', listarVentasPorFecha)
 
 router.put('/actualizarVenta/:id', actualizarVenta)
 
-//router.delete('/eliminarVenta/:id', eliminarVenta )
+router.delete('/eliminarVenta/:id', eliminarVenta )
 
 export default router

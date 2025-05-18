@@ -113,12 +113,34 @@ const registrarMovimiento = async (req, res) => {
     }
 }
 
-const listarMovimientos = async (req, res) => {
+const listarMovimientosPorResponsable = async (req, res) => {
     try {
-        const movimientos = await Movements.find();
+        const { desde, hasta } = req.query;
+
+        let fechaInicio = desde ? new Date(desde) : new Date();
+        fechaInicio.setHours(0, 0, 0, 0);
+
+        let fechaFin = hasta ? new Date(hasta) : new Date(fechaInicio);
+        fechaFin.setHours(23, 59, 59, 999);
+
+        const userID = req.user._id;
+
+        if(!userID){
+            return res.status(401).json({ message: 'Usuario no autenticado' });
+        }
+
+        const movimientos = await Movements.find({
+            fecha: {
+                $gte: fechaInicio,
+                $lte: fechaFin
+            },
+            'responsable.id': userID,
+        });
+
         res.status(200).json(movimientos);
     } catch (error) {
-        res.status(500).json({ msg: "Error al listar movimientos", error });
+        console.error('Error al listar movimientos:', error);
+        res.status(500).json({ message: 'Error del servidor' });
     }
 };
 
@@ -179,7 +201,7 @@ const eliminarMovimiento = async (req, res) => {
 
 export {
     registrarMovimiento,
-    listarMovimientos,
+    listarMovimientosPorResponsable,
     listarMovimientoPorId,
     actualizarMovimiento,
     eliminarMovimiento
