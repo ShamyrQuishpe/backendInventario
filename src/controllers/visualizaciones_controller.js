@@ -33,33 +33,32 @@ const listarProductosPorFecha = async (req, res) => {
 
         let fechaInicio, fechaFin;
 
-        // CASO: no se pasan fechas → por defecto día actual
         if (!desde && !hasta) {
-            fechaInicio = new Date();
-            fechaInicio.setHours(0, 0, 0, 0);
+            // Por defecto: hoy
+            const hoy = new Date();
+            const mañana = new Date(hoy);
+            mañana.setDate(hoy.getDate() + 1);
 
-            fechaFin = new Date();
-            fechaFin.setHours(23, 59, 59, 999);
+            fechaInicio = new Date(hoy.toISOString().split('T')[0]); // hoy a 00:00
+            fechaFin = new Date(mañana.toISOString().split('T')[0]); // mañana a 00:00
         } else {
-            // fechaInicio: si se pasó, se usa. Si no, se usa hoy.
-            fechaInicio = desde ? new Date(desde) : new Date();
-            fechaInicio.setHours(0, 0, 0, 0);
+            fechaInicio = new Date((desde || new Date()).toString().split('T')[0]);
 
             if (hasta) {
-                // Aquí está el cambio CLAVE: usar la misma fecha hasta y setear 23:59:59.999
-                fechaFin = new Date(hasta);
-                fechaFin.setHours(23, 59, 59, 999); // Incluye todo el día hasta el final
+                const siguienteDia = new Date(hasta);
+                siguienteDia.setDate(siguienteDia.getDate() + 1); // Día después de "hasta"
+                fechaFin = new Date(siguienteDia.toISOString().split('T')[0]);
             } else {
-                // Si no se pasa "hasta", usar final del día "desde"
-                fechaFin = new Date(fechaInicio);
-                fechaFin.setHours(23, 59, 59, 999);
+                const siguienteDia = new Date(fechaInicio);
+                siguienteDia.setDate(siguienteDia.getDate() + 1);
+                fechaFin = new Date(siguienteDia.toISOString().split('T')[0]);
             }
         }
 
         const productos = await Products.find({
             fechaIngreso: {
                 $gte: fechaInicio,
-                $lte: fechaFin
+                $lt: fechaFin // usamos $lt y no $lte para cubrir todo el último día
             }
         });
 
@@ -69,6 +68,7 @@ const listarProductosPorFecha = async (req, res) => {
         res.status(500).json({ message: 'Error del servidor' });
     }
 };
+
 
 const listarVentasPorFecha = async (req, res) => {
     try {
