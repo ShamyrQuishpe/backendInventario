@@ -154,11 +154,29 @@ const listarVentasPorVendedor = async (req, res) => {
     try {
         const { desde, hasta } = req.query;
 
-        let fechaInicio = desde ? new Date(desde) : new Date();
-        fechaInicio.setHours(0, 0, 0, 0);
+        let fechaInicio, fechaFin;
 
-        let fechaFin = hasta ? new Date(hasta) : new Date(fechaInicio);
-        fechaFin.setHours(23, 59, 59, 999);
+        if (!desde && !hasta) {
+            // Por defecto: hoy
+            const hoy = new Date();
+            const mañana = new Date(hoy);
+            mañana.setDate(hoy.getDate() + 1);
+
+            fechaInicio = new Date(hoy.toISOString().split('T')[0]); // hoy a 00:00
+            fechaFin = new Date(mañana.toISOString().split('T')[0]); // mañana a 00:00
+        } else {
+            fechaInicio = new Date((desde || new Date()).toString().split('T')[0]);
+
+            if (hasta) {
+                const siguienteDia = new Date(hasta);
+                siguienteDia.setDate(siguienteDia.getDate() + 1); // Día después de "hasta"
+                fechaFin = new Date(siguienteDia.toISOString().split('T')[0]);
+            } else {
+                const siguienteDia = new Date(fechaInicio);
+                siguienteDia.setDate(siguienteDia.getDate() + 1);
+                fechaFin = new Date(siguienteDia.toISOString().split('T')[0]);
+            }
+        }
 
         const userID = req.user._id;
 
