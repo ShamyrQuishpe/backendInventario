@@ -120,25 +120,32 @@ const listarMovimientosPorResponsable = async (req, res) => {
         let fechaInicio, fechaFin;
 
         if (!desde && !hasta) {
-            // Por defecto: hoy
+            // Por defecto: hoy (a las 00:00:00)
             const hoy = new Date();
-            const mañana = new Date(hoy);
-            mañana.setDate(hoy.getDate() + 1);
+            fechaInicio = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
 
-            fechaInicio = new Date(hoy.toISOString().split('T')[0]); // hoy a 00:00
-            fechaFin = new Date(mañana.toISOString().split('T')[0]); // mañana a 00:00
+            // Mañana (inicio del día siguiente)
+            fechaFin = new Date(fechaInicio);
+            fechaFin.setDate(fechaFin.getDate() + 1);
+
+            console.log(fechaInicio)
+            console.log(fechaFin)
         } else {
-            fechaInicio = new Date((desde || new Date()).toString().split('T')[0]);
-
+            // Si viene "desde"
+            const desdeDate = desde ? new Date(desde) : new Date();
+            fechaInicio = new Date(desdeDate.getFullYear(), desdeDate.getMonth(), desdeDate.getDate());
+            fechaInicio.setDate(fechaInicio.getDate() + 1)
             if (hasta) {
-                const siguienteDia = new Date(hasta);
-                siguienteDia.setDate(siguienteDia.getDate() + 1); // Día después de "hasta"
-                fechaFin = new Date(siguienteDia.toISOString().split('T')[0]);
+                const hastaDate = new Date(hasta);
+                fechaFin = new Date(hastaDate.getFullYear(), hastaDate.getMonth(), hastaDate.getDate());
+                fechaFin.setDate(fechaFin.getDate() + 2); // +1 día para incluir todo el 'hasta'
             } else {
-                const siguienteDia = new Date(fechaInicio);
-                siguienteDia.setDate(siguienteDia.getDate() + 1);
-                fechaFin = new Date(siguienteDia.toISOString().split('T')[0]);
+                fechaFin = new Date(fechaInicio);
+                fechaFin.setDate(fechaFin.getDate() + 1);
             }
+
+            console.log(fechaInicio)
+            console.log(fechaFin)
         }
 
         const userID = req.user._id;
