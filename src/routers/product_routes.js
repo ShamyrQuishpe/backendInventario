@@ -23,7 +23,7 @@ router.get('/listarProducto/:codigoBarras', autenticar, verificarRol('Administra
 
 router.get('/productosBodeguero', autenticar, verificarRol('Bodeguero'), listarProductosPorResponsable) // aun no ocupa movil
 
-router.get('/productos', autenticar, verificarRol('Administrador'),listarProductosPorFecha)
+router.get('/productos', autenticar, verificarRol('Administrador'), listarProductosPorFecha)
 
 router.put('/actualizarProducto/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), actualizarProducto) // movil aun no ocupa
 
