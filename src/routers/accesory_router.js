@@ -20,7 +20,7 @@ router.post('/agregarAccesorio', autenticar, verificarRol('Administrador', 'Bode
 
 router.get('/listarAccesorios', autenticar, verificarRol('Administrador', 'Bodeguero'), listarAccesorios)
 
-router.get('/listarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), detalleAccesorio) // aun no se ocupa front ni movil
+router.get('/listarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero', 'Vendedor'), detalleAccesorio) // aun no se ocupa front ni movil
 
 router.get('/accesoriosBodeguero', autenticar, verificarRol('Administrador', 'Bodeguero'), listarAccesoriosPorResponsable) // aun no se ocupa movil
 

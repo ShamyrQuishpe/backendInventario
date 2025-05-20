@@ -19,7 +19,7 @@ router.post('/agregarProducto', autenticar, verificarRol('Administrador', 'Bodeg
 
 router.get('/listarProductos', autenticar, verificarRol('Administrador', 'Bodeguero'), listarProductos) 
 
-router.get('/listarProducto/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), listarProductoPorCodigoBarras) //aun no se usa front ni movil
+router.get('/listarProducto/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero', 'Vendedor'), listarProductoPorCodigoBarras) //aun no se usa front ni movil
 
 router.get('/productosBodeguero', autenticar, verificarRol('Bodeguero'), listarProductosPorResponsable) // aun no ocupa movil
 
