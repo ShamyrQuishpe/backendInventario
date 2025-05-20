@@ -29,7 +29,7 @@ router.get('/users/:cedula',autenticar, verificarRol('Administrador'), detalleUs
 
 router.get('/areasunicas', autenticar, listarAreasUnicas) //aun no se ocupa
 
-router.put('/users/nuevapassword',autenticar, verificarRol('Administrador'), nuevaPassword) //aun no se ocupa
+router.put('/nuevapassword/:cedula',autenticar, verificarRol('Administrador'), nuevaPassword) //aun no se ocupa
 
 router.put('/cambiar-contrasena/:token', cambiarPasswordTemporal); 
 

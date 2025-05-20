@@ -12,6 +12,7 @@ const productSchema = new Schema({
     codigoSerial:{
         type: String,
         require: true,
+        unique: true,
     },
     nombreEquipo:{
         type: String,

@@ -41,6 +41,12 @@ const agregarProducto = async (req, res) => {
     }
     console.log(req.body)
     try {
+
+        const productoExistente = await Products.findOne({ codigoSerial });
+        if (productoExistente) {
+            return res.status(400).json({ msg: "El código de serie ya está registrado para otro producto" });
+        }
+
         const categoria = await Categories.findOne({ nombreCategoria: categoriaNombre });
         console.log(categoria)
         if (!categoria) {

@@ -100,28 +100,34 @@ const detalleUsuario = async (req,res) => { //revisar para buscar por correo o b
 }
 
 const nuevaPassword = async (req, res) => {
+    try {
+        const { cedula } = req.params;
+        const { passwordnuevo, repetirpassword } = req.body;
 
-    if (!req.user || !req.user._id) {
-        return res.status(401).json({ msg: "No estás autenticado o falta el usuario" });
+        // Validaciones básicas
+        if (!passwordnuevo || !repetirpassword) {
+            return res.status(400).json({ msg: "Debes ingresar y repetir la nueva contraseña" });
+        }
+
+        if (passwordnuevo !== repetirpassword) {
+            return res.status(400).json({ msg: "Las contraseñas no coinciden" });
+        }
+
+        const usuarioBDD = await Users.findOne({ cedula });
+
+        if (!usuarioBDD) {
+            return res.status(404).json({ msg: `No existe un usuario con la cédula ${cedula}` });
+        }
+
+        usuarioBDD.password = await usuarioBDD.encrypPassword(passwordnuevo);
+        await usuarioBDD.save();
+
+        res.status(200).json({ msg: `Contraseña actualizada correctamente para el usuario con cédula ${cedula}` });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error del servidor al actualizar la contraseña" });
     }
-
-    const usuarioBDD = await Users.findById(req.user._id);
-
-    if (!usuarioBDD) {
-        return res.status(404).json({ msg: `Lo sentimos, no existe el usuario ${req.user._id}` });
-    }
-
-    const verificarPassword = await usuarioBDD.matchPassword(req.body.passwordactual);
-
-    if (!verificarPassword) {
-        return res.status(400).json({ msg: "Lo sentimos, el password actual no es el correcto" });
-    }
-
-    usuarioBDD.password = await usuarioBDD.encrypPassword(req.body.passwordnuevo);
-
-    await usuarioBDD.save();
-
-    res.status(200).json({ msg: "Password actualizado correctamente" });
 };
 
 const cambiarPasswordTemporal = async (req,res) => {
