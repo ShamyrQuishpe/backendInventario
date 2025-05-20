@@ -35,10 +35,12 @@ const accesorySchema = new Schema({
         type: Date,
         default: Date.now
     },
-    categoriaNombre:{
-        type: String,
-        require: true
-    }
+    categoriaNombre: [
+        {
+            id: { type: mongoose.Schema.Types.ObjectId, ref: 'category'},
+            nombreCategoria: { type:String },
+        }
+    ],
 })
 
 export default mongoose.model('Accesories', accesorySchema)
