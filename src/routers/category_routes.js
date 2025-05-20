@@ -15,7 +15,7 @@ const router = Router()
 
 router.post('/crearCategoria', autenticar, verificarRol('Administrador'), crearCategoria) 
 
-router.get('/listarCategorias', autenticar, verificarRol('Administrador'), listarCategorias)
+router.get('/listarCategorias', autenticar, verificarRol('Administrador', 'Vendedor', 'Bodeguero'), listarCategorias)
 
 router.get('/listarCategoria/:id', autenticar, verificarRol('Administrador'), obtenerCategoriasPorId)
 

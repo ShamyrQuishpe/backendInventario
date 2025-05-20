@@ -34,6 +34,10 @@ const accesorySchema = new Schema({
     fechaIngreso:{
         type: Date,
         default: Date.now
+    },
+    categoriaNombre:{
+        type: String,
+        require: true
     }
 })
 

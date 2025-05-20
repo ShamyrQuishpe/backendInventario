@@ -199,7 +199,7 @@ const listarAccesoriosPorFecha = async (req, res) => {
     }
 };
 
-const listarStockDisponible = async (req, res) => {
+const listarStockDisponible = async (req, res) => { //seriales en un arreglo
     try {
         const { nombre, capacidad, categoria } = req.query;
 
@@ -232,7 +232,8 @@ const listarStockDisponible = async (req, res) => {
                     precio: { $first: '$precio' },
                     tipo: { $first: '$tipo' },
                     categoria: { $first: { $arrayElemAt: ['$categoriaNombre.nombreCategoria', 0] } },
-                    locacion: { $first: '$locacion' }
+                    locacion: { $first: '$locacion' },
+                    seriales: { $push: '$codigoSerial' }
                 }
             },
             {
@@ -246,7 +247,8 @@ const listarStockDisponible = async (req, res) => {
                     tipo: 1,
                     categoria: 1,
                     locacion: 1,
-                    cantidad: 1
+                    cantidad: 1,
+                    seriales: 1
                 }
             },
             {
