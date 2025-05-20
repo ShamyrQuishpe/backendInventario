@@ -233,7 +233,7 @@ const listarStockDisponible = async (req, res) => {
                     tipo: { $first: '$tipo' },
                     categoria: { $first: { $arrayElemAt: ['$categoriaNombre.nombreCategoria', 0] } },
                     locacion: { $first: '$locacion' },
-                    seriales: { $push: '$codigoSerial' }
+                    codigoB: { $push: '$codigoBarras' }
                 }
             },
             {
@@ -248,7 +248,7 @@ const listarStockDisponible = async (req, res) => {
                     categoria: 1,
                     locacion: 1,
                     cantidad: 1,
-                    seriales: 1
+                    codigoB: 1
                 }
             },
             {
