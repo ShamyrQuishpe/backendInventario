@@ -53,7 +53,7 @@ const agregarAccesorio = async (req, res) => {
                 id: req.user._id,
                 nombre: req.user.nombre
             },
-            categoriaNombre: "Accesorios"
+            categoriaNombre: "accesorios"
         });
 
         await nuevoAccesorio.save();
