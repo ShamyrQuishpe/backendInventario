@@ -199,7 +199,7 @@ const listarAccesoriosPorFecha = async (req, res) => {
     }
 };
 
-const listarStockDisponible = async (req, res) => { //seriales en un arreglo
+const listarStockDisponible = async (req, res) => {
     try {
         const { nombre, capacidad, categoria } = req.query;
 
@@ -252,7 +252,7 @@ const listarStockDisponible = async (req, res) => { //seriales en un arreglo
                 }
             },
             {
-                $sort: { cantidad: -1 } // Opcional: ordena por cantidad descendente
+                $sort: { cantidad: -1 }
             }
         ]);
 
@@ -265,6 +265,10 @@ const listarStockDisponible = async (req, res) => { //seriales en un arreglo
             matchAccesorios.nombreAccs = { $regex: nombre, $options: 'i' };
         }
 
+        if (categoria) {
+            matchAccesorios['categoriaNombre.nombreCategoria'] = { $regex: categoria, $options: 'i' };
+        }
+
         const accesoriosAgrupados = await Accesories.aggregate([
             { $match: matchAccesorios },
             {
@@ -273,7 +277,9 @@ const listarStockDisponible = async (req, res) => { //seriales en un arreglo
                     cantidad: { $sum: 1 },
                     nombreAccs: { $first: '$nombreAccs' },
                     precioAccs: { $first: '$precioAccs' },
-                    locacionAccs: { $first: '$locacionAccs' }
+                    locacionAccs: { $first: '$locacionAccs' },
+                    categoria: { $first: { $arrayElemAt: ['$categoriaNombre.nombreCategoria', 0] } },
+                    codigosBarras: { $push: '$codigoBarrasAccs' }
                 }
             },
             {
@@ -283,11 +289,13 @@ const listarStockDisponible = async (req, res) => { //seriales en un arreglo
                     nombreAccs: 1,
                     precioAccs: 1,
                     locacionAccs: 1,
-                    cantidad: 1
+                    categoria: 1,
+                    cantidad: 1,
+                    codigosBarras: 1
                 }
             },
             {
-                $sort: { cantidad: -1 } // Opcional
+                $sort: { cantidad: -1 }
             }
         ]);
 
@@ -300,6 +308,7 @@ const listarStockDisponible = async (req, res) => { //seriales en un arreglo
         res.status(500).json({ message: 'Error del servidor' });
     }
 };
+
 
 export {
     listarMovimientosPorFecha,
