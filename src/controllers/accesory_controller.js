@@ -1,5 +1,6 @@
 import Accesories from '../models/accesory.js'
 import Products from '../models/product.js'
+import Categories from '../models/category.js';
 
 const generarCodigoBarras = () => {
     let codigo = "";
@@ -36,10 +37,12 @@ const generarCodigoBarrasAccesorio = async () => {
 };
 
 const agregarAccesorio = async (req, res) => {
-    const { codigoModeloAccs, nombreAccs, precioAccs } = req.body;
+    const { codigoModeloAccs, categoriaNombre, nombreAccs, precioAccs } = req.body;
 
 
     try {
+        const categoria = await Categories.findOne({ nombreCategoria: categoriaNombre });
+        console.log(categoria)
         const codigoBarrasGenerado = await generarCodigoBarrasAccesorio();
 
         const nuevoAccesorio = new Accesories({
@@ -55,7 +58,7 @@ const agregarAccesorio = async (req, res) => {
             },
             categoriaNombre: {
                 id:categoria._id,
-                nombreCategoria: "accesorio"
+                nombreCategoria: categoriaNombre
             },
         });
 
