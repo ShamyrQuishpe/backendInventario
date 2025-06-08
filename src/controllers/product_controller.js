@@ -58,6 +58,7 @@ const agregarProducto = async (req, res) => {
         const nuevoProducto = new Products({
             ...otrosCampos,
             codigoBarras: codigoBarrasGenerado,
+            codigoSerial,
             responsable: {
                 id: req.user._id,
                 nombre: req.user.nombre
