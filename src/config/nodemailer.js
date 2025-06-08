@@ -15,7 +15,7 @@ let transporter  = nodemailer.createTransport({
 
 const sendMailToUser = (userMail, contrasenaTemporal, token, nombre) => {
     
-    const link = `http://localhost:5173/reset/${token}`
+    const link = `https://inventariogarythink.netlify.app/reset/${token}`
 
     const html = `
     <html>

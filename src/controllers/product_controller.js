@@ -34,7 +34,7 @@ const generarCodigoBarrasUnico = async (req,res) => {
 }
 
 const agregarProducto = async (req, res) => {
-    const { codigoBarras, categoriaNombre, ...otrosCampos } = req.body;
+    const { codigoBarras, codigoSerial, categoriaNombre, ...otrosCampos } = req.body;
 
     if (Object.values(otrosCampos).includes("")) {
         return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
