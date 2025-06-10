@@ -5,37 +5,37 @@ import { response } from 'express'
 const userSchema = new Schema({
     nombre:{
         type:String,
-        require:true,
+        required:true,
     },
     apellido:{
         type:String,
-        require:true,
+        required:true,
     },
     cedula:{
         type:String,
-        require:true,
+        required:true,
     },
     telefono:{
         type:String,
-        require:true,
+        required:true,
     },
     email:{
         type:String,
-        require:true,
+        required:true,
         trim:true,
         unique:true,
     },
     password:{
         type:String,
-        require:true,
+        required:true,
     },
     area:{
         type:String,
-        requiere:true,
+        requiered:true,
     },
     rol:{
         type: String,
-        require: true,
+        required: true,
     },
     status:{
         type: String,

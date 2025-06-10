@@ -5,27 +5,52 @@ import sendMailToUser from '../config/nodemailer.js'
 
 
 const loginUsuario = async (req, res) => {
-    const {email, password} = req.body
-    if(Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
-    const userBDD = await Users.findOne({email}).select("-status -__v -updatedAt -createdAt")
-    if(!userBDD) return res.status(404).json({msg:"Lo sentimos, el usuario no se encuentra registrado"}) 
-    const verificarPassword = await userBDD.matchPassword(password)
-    if(!verificarPassword) return res.status(400).json({msg:"Lo sentimos, la contrasena no es correcta"})
-    
-    const {nombre, apellido,rol, telefono, area, estado, _id }  = userBDD
-    const token = generarJWT(userBDD._id, "usuario")
-    
-    console.log(userBDD)
-    
+  try {
+    const { email, password } = req.body;
+
+    // Validación de campos vacíos
+    if (Object.values(req.body).includes("")) {
+      return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
+    }
+
+    // Buscar al usuario y obtener también el password (que está oculto por defecto)
+    const userBDD = await Users.findOne({ email }).select("+password");
+
+    if (!userBDD) {
+      return res.status(404).json({ msg: "Lo sentimos, el usuario no se encuentra registrado" });
+    }
+
+    // Verificar contraseña
+    const verificarPassword = await userBDD.matchPassword(password);
+
+    if (!verificarPassword) {
+      return res.status(400).json({ msg: "Lo sentimos, la contraseña no es correcta" });
+    }
+
+    // Desestructurar datos necesarios
+    const { nombre, apellido, rol, telefono, area, _id, email: userEmail } = userBDD;
+
+    // Generar token
+    const token = generarJWT(_id, "usuario");
+
+    // Enviar respuesta
     res.status(200).json({
-        nombre,
-        apellido,
-        token,
-        _id,
-        rol,
-        email: userBDD.email
-    })
-}
+      nombre,
+      apellido,
+      token,
+      _id,
+      rol,
+      email: userEmail,
+      telefono,
+      area
+    });
+
+  } catch (error) {
+    console.error("Error en loginUsuario:", error);
+    res.status(500).json({ msg: "Error interno del servidor" });
+  }
+};
+
 
 const registroUsuario = async (req,res) => {
     const {email, nombre} = req.body

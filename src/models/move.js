@@ -30,15 +30,14 @@ const moveSchema = new Schema({
     ],
     areaLlegada:{
         type: String,
-        require: true,
+        required: true,
     },
     areaSalida:{
         type: String,
-        require: true,
+        required: true,
     },
     observacion:{
         type: String,
-        require: true
     }
 })
 

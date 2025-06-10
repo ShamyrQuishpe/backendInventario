@@ -3,32 +3,32 @@ import mongoose, {Schema, model} from 'mongoose'
 const productSchema = new Schema({
     codigoBarras:{
         type: String, 
-        require: true,
+        required: true,
     },
     codigoModelo:{
         type: String,
-        require: true,
+        required: true,
     },
     codigoSerial:{
         type: String,
-        require: true,
+        required: true,
         unique: true,
     },
     nombreEquipo:{
         type: String,
-        require: true,
+        required: true,
     },
     color:{
         type: String,
-        require: true,
+        required: true,
     },
     capacidad:{
         type: String,
-        require: true,
+        required: true,
     },
     precio:{
         type: Number,
-        require: true
+        required: true
     },
     responsable: [
         {
@@ -38,11 +38,11 @@ const productSchema = new Schema({
     ],
     tipo:{
         type: String,
-        require: true
+        required: true
     },
     estado:{
         type: String,
-        require: true
+        required: true
     },
     categoriaNombre: [
         {
@@ -52,7 +52,7 @@ const productSchema = new Schema({
     ],
     locacion:{
         type: String,
-        require: true
+        required: true
     },
     fechaIngreso:{
         type: Date,

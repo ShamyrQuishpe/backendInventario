@@ -3,27 +3,27 @@ import mongoose, {Schema, model} from "mongoose";
 const accesorySchema = new Schema({
     codigoBarrasAccs:{
         type: String,
-        require: true
+        required: true
     },
     codigoModeloAccs:{
         type: String,
-        require: true
+        required: true
     },
     nombreAccs:{
         type: String,
-        require: true
+        required: true
     },
     precioAccs:{
         type: Number,
-        require: true
+        required: true
     },
     disponibilidadAccs:{
         type: String,
-        require: true
+        required: true
     },
     locacionAccs:{
         type: String,
-        require: true
+        required: true
     },
     responsableAccs:[
         {

@@ -3,11 +3,11 @@ import mongoose, { Schema, model } from "mongoose";
 const categorySchema = new Schema({
     nombreCategoria:{
         type: String,
-        require: true,
+        required: true,
     },
     descripcionCategoria:{
         type: String,
-        require: true
+        required: true
     }
 })
 
