@@ -16,18 +16,18 @@ import { listarAccesoriosPorFecha } from "../controllers/visualizaciones_control
 
 const router = Router()
 
-router.post('/agregarAccesorio', autenticar, verificarRol('Administrador', 'Bodeguero'), agregarAccesorio) 
+router.post('/agregarAccesorio', autenticar, verificarRol('Administrador', 'Bodeguero'), agregarAccesorio) //Monica Miguel
 
-router.get('/listarAccesorios', autenticar, verificarRol('Administrador', 'Bodeguero'), listarAccesorios)
+router.get('/listarAccesorios', autenticar, verificarRol('Administrador', 'Bodeguero'), listarAccesorios) //Monica Miguel
 
-router.get('/listarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero', 'Vendedor'), detalleAccesorio) // aun no se ocupa front ni movil
+router.get('/listarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero', 'Vendedor'), detalleAccesorio) //Miguel
 
-router.get('/accesoriosBodeguero', autenticar, verificarRol('Administrador', 'Bodeguero'), listarAccesoriosPorResponsable) // aun no se ocupa movil
+router.get('/accesoriosBodeguero', autenticar, verificarRol('Administrador', 'Bodeguero'), listarAccesoriosPorResponsable) //Miguel
 
-router.get('/accesorios',autenticar, verificarRol('Administrador'), listarAccesoriosPorFecha)
+router.get('/accesorios',autenticar, verificarRol('Administrador'), listarAccesoriosPorFecha) //Monica
 
-router.put('/actualizarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), actualizarAccesorio) // aun no se ocupa movil
+router.put('/actualizarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), actualizarAccesorio) //Monica Miguel
 
-router.delete('/eliminarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador'), eliminarAccesorio) // aun no se ocupa movil
+router.delete('/eliminarAccesorio/:codigoBarras', autenticar, verificarRol('Administrador'), eliminarAccesorio) //Monica Miguel
 
 export default router

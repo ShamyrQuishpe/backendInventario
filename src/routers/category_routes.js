@@ -5,7 +5,6 @@ import verificarRol from "../middlewares/verifyrol.js";
 import{
     crearCategoria,
     listarCategorias,
-    obtenerCategoriasPorId,
     actualizarCategorias,
     eliminarCategoria,
 
@@ -13,14 +12,12 @@ import{
 
 const router = Router()
 
-router.post('/crearCategoria', autenticar, verificarRol('Administrador'), crearCategoria) 
+router.post('/crearCategoria', autenticar, verificarRol('Administrador'), crearCategoria) //Monica
 
-router.get('/listarCategorias', autenticar, verificarRol('Administrador', 'Vendedor', 'Bodeguero'), listarCategorias)
+router.get('/listarCategorias', autenticar, verificarRol('Administrador', 'Vendedor', 'Bodeguero'), listarCategorias) //Monica Miguel
 
-router.get('/listarCategoria/:id', autenticar, verificarRol('Administrador'), obtenerCategoriasPorId)
+router.put('/actualizarCategoria/:id', autenticar, verificarRol('Administrador'), actualizarCategorias) //Monica
 
-router.put('/actualizarCategoria/:id', autenticar, verificarRol('Administrador'), actualizarCategorias)
-
-router.delete('/eliminarCategoria/:id', autenticar, verificarRol('Administrador'), eliminarCategoria)
+router.delete('/eliminarCategoria/:id', autenticar, verificarRol('Administrador'), eliminarCategoria) //Monica
 
 export default router

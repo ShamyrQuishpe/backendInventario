@@ -8,32 +8,26 @@ const loginUsuario = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validación de campos vacíos
     if (Object.values(req.body).includes("")) {
       return res.status(400).json({ msg: "Lo sentimos, debes llenar todos los campos" });
     }
 
-    // Buscar al usuario y obtener también el password (que está oculto por defecto)
     const userBDD = await Users.findOne({ email }).select("+password");
 
     if (!userBDD) {
       return res.status(404).json({ msg: "Lo sentimos, el usuario no se encuentra registrado" });
     }
 
-    // Verificar contraseña
     const verificarPassword = await userBDD.matchPassword(password);
 
     if (!verificarPassword) {
       return res.status(400).json({ msg: "Lo sentimos, la contraseña no es correcta" });
     }
 
-    // Desestructurar datos necesarios
     const { nombre, apellido, rol, telefono, area, _id, email: userEmail } = userBDD;
 
-    // Generar token
     const token = generarJWT(_id, "usuario");
 
-    // Enviar respuesta
     res.status(200).json({
       nombre,
       apellido,
@@ -104,7 +98,7 @@ const listarUsuarios = async (req,res) => {
     res.status(200).json(user)
 }
 
-const listarAreasUnicas = async (req, res) => {
+const listarAreasUnicas = async (req, res) => { //revisar si se esta haciendo uso
     try {
         const areas = await Users.distinct('area');
         res.status(200).json(areas);
@@ -113,16 +107,6 @@ const listarAreasUnicas = async (req, res) => {
         res.status(500).json({ message: 'Error del servidor' });
     }
 };
-
-const detalleUsuario = async (req,res) => { //revisar para buscar por correo o bien agregar cedula
-    const {cedula} = req.params
-
-    const user = await Users.findOne({cedula})
-
-    if(!user) return res.status(400).json({msg: `Lo sentimos no existe coincidencias con la cedula ingresada: ${cedula}` })
-    
-    res.status(200).json(user)
-}
 
 const nuevaPassword = async (req, res) => {
     try {
@@ -179,7 +163,6 @@ const cambiarPasswordTemporal = async (req,res) => {
     } catch (error) {
       return res.status(401).json({ msg: "Token inválido o expirado" });
     }
-
 }
 
 
@@ -231,7 +214,6 @@ export {
     registroUsuario,
     perfilUsuario,
     listarUsuarios,
-    detalleUsuario,
     nuevaPassword,
     actualizarUsuario,
     eliminarUsuario,

@@ -15,19 +15,19 @@ import { listarProductosPorFecha } from "../controllers/visualizaciones_controll
 const router = Router()
 
 
-router.post('/agregarProducto', autenticar, verificarRol('Administrador', 'Bodeguero'), agregarProducto)
+router.post('/agregarProducto', autenticar, verificarRol('Administrador', 'Bodeguero'), agregarProducto) //Monica Miguel
 
-router.get('/listarProductos', autenticar, verificarRol('Administrador', 'Bodeguero'), listarProductos) 
+router.get('/listarProductos', autenticar, verificarRol('Administrador', 'Bodeguero'), listarProductos) //Monica Miguel
 
-router.get('/listarProducto/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero', 'Vendedor'), listarProductoPorCodigoBarras) //aun no se usa front ni movil
+router.get('/listarProducto/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero', 'Vendedor'), listarProductoPorCodigoBarras) //Miguel
 
-router.get('/productosBodeguero', autenticar, verificarRol('Bodeguero'), listarProductosPorResponsable) // aun no ocupa movil
+router.get('/productosBodeguero', autenticar, verificarRol('Bodeguero'), listarProductosPorResponsable) //Miguel
 
-router.get('/productos', autenticar, verificarRol('Administrador'), listarProductosPorFecha)
+router.get('/productos', autenticar, verificarRol('Administrador'), listarProductosPorFecha) //Monica
 
-router.put('/actualizarProducto/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), actualizarProducto) // movil aun no ocupa
+router.put('/actualizarProducto/:codigoBarras', autenticar, verificarRol('Administrador', 'Bodeguero'), actualizarProducto) //Monica Miguel
 
-router.delete('/eliminarProducto/:codigoBarras', autenticar, verificarRol('Administrador'), eliminarProducto) // movil aun no ocupa
+router.delete('/eliminarProducto/:codigoBarras', autenticar, verificarRol('Administrador'), eliminarProducto) //Monica
 
 
 export default router

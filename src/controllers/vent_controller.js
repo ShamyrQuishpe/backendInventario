@@ -209,21 +209,6 @@ const listarVentasPorVendedor = async (req, res) => {
     }
 };
 
-const detalleVenta = async (req, res) => {
-    try {
-        const venta = await Vents.findById(req.params.id)
-
-        if (!venta) {
-            return res.status(404).json({ msg: "Venta no encontrada" });
-        }
-
-        res.status(200).json(venta);
-    } catch (error) {
-        console.error("Error al obtener el detalle de la venta:", error);
-        res.status(500).json({ msg: "Error al obtener el detalle de la venta" });
-    }
-};
-
 const actualizarVenta = async (req, res) => {
     try {
         const { observacion, metodoPago } = req.body; //actualizar cliente y descuento
@@ -270,7 +255,6 @@ const eliminarVenta = async (req, res) => { //revisar si es conveniente o no dev
 export { 
     registrarVenta,
     listarVentasPorVendedor,
-    detalleVenta,
     actualizarVenta,
     eliminarVenta
 };

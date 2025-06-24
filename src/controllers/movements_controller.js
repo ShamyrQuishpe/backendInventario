@@ -169,21 +169,6 @@ const listarMovimientosPorResponsable = async (req, res) => {
     }
 };
 
-const listarMovimientoPorId = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const movimiento = await Movements.findById(id);
-
-        if (!movimiento) {
-            return res.status(404).json({ msg: "Movimiento no encontrado" });
-        }
-
-        res.status(200).json(movimiento);
-    } catch (error) {
-        res.status(500).json({ msg: "Error al obtener el movimiento", error });
-    }
-};
-
 const actualizarMovimiento = async (req, res) => {
     try {
         const { id } = req.params;
@@ -227,7 +212,6 @@ const eliminarMovimiento = async (req, res) => {
 export {
     registrarMovimiento,
     listarMovimientosPorResponsable,
-    listarMovimientoPorId,
     actualizarMovimiento,
     eliminarMovimiento
 }

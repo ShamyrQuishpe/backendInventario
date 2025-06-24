@@ -5,7 +5,6 @@ import verificarRol from "../middlewares/verifyrol.js";
 import { 
     registrarVenta,
     listarVentasPorVendedor,
-    detalleVenta,
     actualizarVenta,
     eliminarVenta
 } from "../controllers/vent_controller.js";
@@ -14,16 +13,14 @@ import { listarVentasPorFecha } from "../controllers/visualizaciones_controller.
 
 const router = Router()
 
-router.post('/registrarVenta', autenticar, verificarRol('Administrador', 'Vendedor'), registrarVenta)
+router.post('/registrarVenta', autenticar, verificarRol('Administrador', 'Vendedor'), registrarVenta) //Monica
 
-router.get('/listarVentasVendedor', autenticar, verificarRol('Vendedor'), listarVentasPorVendedor) 
+router.get('/listarVentasVendedor', autenticar, verificarRol('Vendedor'), listarVentasPorVendedor) //Monica
 
-router.get('/detalleVenta/:id',autenticar, verificarRol('Administrador', 'Vendedor'), detalleVenta) //aun no se ocupa
+router.get('/ventas', autenticar, verificarRol('Administrador'), listarVentasPorFecha) //Monica
 
-router.get('/ventas', autenticar, verificarRol('Administrador'), listarVentasPorFecha)
+router.put('/actualizarVenta/:id', autenticar, verificarRol('Vendedor'), actualizarVenta) //Monica
 
-router.put('/actualizarVenta/:id', autenticar, verificarRol('Vendedor'), actualizarVenta) //aun no se ocupa
-
-router.delete('/eliminarVenta/:id', autenticar, verificarRol('Administrador'), eliminarVenta ) //aun no se ocupa
+router.delete('/eliminarVenta/:id', autenticar, verificarRol('Administrador'), eliminarVenta ) //Monica
 
 export default router

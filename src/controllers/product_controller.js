@@ -87,14 +87,12 @@ const agregarProducto = async (req, res) => {
 
 const listarProductos = async (req, res) => {
     try {
-        // Obtener todos los productos
         const productos = await Products.find();
 
         if (productos.length === 0) {
             return res.status(404).json({ msg: "No se encontraron productos" });
         }
 
-        // Responder con los productos
         res.status(200).json({ productos });
     } catch (error) {
         console.error(error);
@@ -180,14 +178,12 @@ const actualizarProducto = async (req, res) => {
     const { categoriaNombre, ...otrosCampos } = req.body;
 
     try {
-        // Buscar el producto
         const producto = await Products.findOne({ codigoBarras });
 
         if (!producto) {
             return res.status(404).json({ msg: "Producto no encontrado" });
         }
 
-        // Si se proporciona un nuevo nombre de categoría, buscarla y actualizar el producto
         if (categoriaNombre) {
             const categoria = await Categories.findOne({ nombreCategoria: categoriaNombre });
 
@@ -195,11 +191,9 @@ const actualizarProducto = async (req, res) => {
                 return res.status(400).json({ msg: "Categoría no encontrada" });
             }
 
-            // Actualizar el producto con el ObjectId de la categoría
             producto.categoriaNombre = categoria._id;
         }
 
-        // Actualizar los otros campos
         Object.assign(producto, otrosCampos);
 
         await producto.save();

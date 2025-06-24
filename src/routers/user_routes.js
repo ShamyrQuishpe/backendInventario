@@ -9,7 +9,6 @@ import {
     registroUsuario,
     perfilUsuario,
     listarUsuarios,
-    detalleUsuario,
     nuevaPassword,
     eliminarUsuario,
     actualizarUsuario,
@@ -17,26 +16,22 @@ import {
     listarAreasUnicas
 } from '../controllers/user_controller.js' 
 
-router.post('/login', loginUsuario)
+router.post('/login', loginUsuario) //Monica Miguel
 
-router.post('/registro',autenticar, verificarRol('Administrador'), registroUsuario)
+router.post('/registro',autenticar, verificarRol('Administrador'), registroUsuario) //Monica
 
-router.get('/perfil', autenticar, perfilUsuario)
+router.get('/perfil', autenticar, perfilUsuario) //Monica Miguel
 
-router.get('/users',autenticar, verificarRol('Administrador'), listarUsuarios)
+router.get('/users',autenticar, verificarRol('Administrador'), listarUsuarios) //Monica 
 
-router.get('/users/:cedula',autenticar, verificarRol('Administrador'), detalleUsuario)
+router.get('/areasunicas', autenticar, listarAreasUnicas) //Miguel
 
-router.get('/areasunicas', autenticar, listarAreasUnicas) //aun no se ocupa
+router.put('/nuevapassword/:cedula',autenticar, verificarRol('Administrador'), nuevaPassword) //Monica
 
-router.put('/nuevapassword/:cedula',autenticar, verificarRol('Administrador'), nuevaPassword) //aun no se ocupa
+router.put('/cambiar-contrasena/:token', cambiarPasswordTemporal); //Monica
 
-router.put('/cambiar-contrasena/:token', cambiarPasswordTemporal); 
+router.put('/users/:cedula',autenticar, verificarRol('Administrador'), actualizarUsuario) //Monica
 
-router.put('/users/:cedula',autenticar, verificarRol('Administrador'), actualizarUsuario)
-
-router.delete('/users/:cedula',autenticar, verificarRol('Administrador'), eliminarUsuario)
-
-//Faltan endpoints para los procesos como tal
+router.delete('/users/:cedula',autenticar, verificarRol('Administrador'), eliminarUsuario) //Monica
 
 export default router

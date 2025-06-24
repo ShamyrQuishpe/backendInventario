@@ -203,7 +203,6 @@ const listarStockDisponible = async (req, res) => {
     try {
         const { nombre, capacidad, categoria } = req.query;
 
-        // === Filtro base para productos ===
         const matchProductos = {
             estado: 'Disponible'
         };

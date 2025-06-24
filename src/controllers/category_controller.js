@@ -8,14 +8,12 @@ const crearCategoria = async (req, res) => {
     }
 
     try {
-        // Verificar si el nombre de la categoría ya existe
         const categoriaExistente = await Categories.findOne({ nombreCategoria: nombreCategoria.trim().toLowerCase() });
 
         if (categoriaExistente) {
             return res.status(400).json({ msg: "El nombre de la categoría ya existe" });
         }
 
-        // Crear nueva categoría
         const nuevaCategoria = new Categories({ 
             nombreCategoria: nombreCategoria.trim().toLowerCase(), 
             descripcionCategoria 
@@ -37,20 +35,6 @@ const listarCategorias = async (req,res) => {
         res.status(200).json(categorias)
     }catch(error){
         res.status(500).json({msg: "Error al obtener categorias",error})
-    }
-}
-
-const obtenerCategoriasPorId = async (req,res) => {
-    const { id } = req.params;
-
-    try {
-        const categoria = await Categories.findById(id)
-        if(!categoria) {
-            return res.status(404).json({ msg: "Categoria no encontrada"})
-        }
-        res.status(200).json(categoria)
-    }catch(error){
-        res.status(500).json({ msg: "Error al obtener la categoria",error})
     }
 }
 
@@ -91,7 +75,6 @@ const eliminarCategoria = async (req,res) => {
 export {
     crearCategoria,
     listarCategorias,
-    obtenerCategoriasPorId,
     actualizarCategorias,
     eliminarCategoria
 }
