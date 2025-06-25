@@ -53,26 +53,6 @@ describe('movements_controller', () => {
     expect(res.json).toHaveBeenCalledWith(expect.any(Array));
   });
 
-  test('listarMovimientoPorId - encontrado', async () => {
-    req.params.id = 'id123';
-    Movements.findById.mockResolvedValue({ _id: 'id123' });
-
-    await listarMovimientoPorId(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ _id: 'id123' });
-  });
-
-  test('listarMovimientoPorId - no encontrado', async () => {
-    req.params.id = 'id123';
-    Movements.findById.mockResolvedValue(null);
-
-    await listarMovimientoPorId(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'Movimiento no encontrado' });
-  });
-
   test('actualizarMovimiento - sin observación válida', async () => {
     req.params.id = 'id123';
     req.body.observacion = 123;

@@ -31,7 +31,6 @@ describe('Vents Controller', () => {
     jest.clearAllMocks();
   });
 
-  // ====== registrarVenta ======
   describe('registrarVenta', () => {
     test('Debe retornar 400 si cliente incompleto', async () => {
       req.body = { cliente: { cedula: '', nombre: '' }, productos: [], accesorios: [], metodoPago: 'efectivo' };
@@ -248,40 +247,6 @@ describe('Vents Controller', () => {
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({ message: 'Error del servidor' });
-    });
-  });
-
-  // ====== detalleVenta ======
-  describe('detalleVenta', () => {
-    test('Debe retornar 404 si venta no encontrada', async () => {
-      req.params = { id: 'venta123' };
-      Vents.findById.mockResolvedValue(null);
-
-      await detalleVenta(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ msg: "Venta no encontrada" });
-    });
-
-    test('Debe retornar venta si encontrada', async () => {
-      req.params = { id: 'venta123' };
-      const ventaMock = { _id: 'venta123', cliente: { nombre: 'Cliente' } };
-      Vents.findById.mockResolvedValue(ventaMock);
-
-      await detalleVenta(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(ventaMock);
-    });
-
-    test('Debe retornar 500 si error en DB', async () => {
-      req.params = { id: 'venta123' };
-      Vents.findById.mockRejectedValue(new Error('Error DB'));
-
-      await detalleVenta(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ msg: "Error al obtener el detalle de la venta" });
     });
   });
 

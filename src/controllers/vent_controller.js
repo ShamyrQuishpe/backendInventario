@@ -230,7 +230,7 @@ const actualizarVenta = async (req, res) => {
     }
 };
 
-const eliminarVenta = async (req, res) => { //revisar si es conveniente o no devolver la disponibilidad del producto
+const eliminarVenta = async (req, res) => { 
     try {
         const venta = await Vents.findById(req.params.id);
 

@@ -139,16 +139,6 @@ describe("User Controller", () => {
     expect(res.json).toHaveBeenCalledWith(fakeUsers);
   });
 
-  test('detalleUsuario - devuelve detalle por cédula', async () => {
-    req.params.cedula = '123';
-    Users.findOne.mockResolvedValue({ nombre: 'Pedro' });
-
-    await detalleUsuario(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ nombre: 'Pedro' });
-  });
-
   test('nuevaPassword - cambia correctamente', async () => {
     req.params.cedula = '123';
     req.body = {

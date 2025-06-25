@@ -20,7 +20,7 @@ const autenticar = async (req, res, next) => {
 
     req.user = usuario;
 
-    console.log("Usuario autenticado:", req.user); // 👈 Verifica todo el objeto aquí
+    console.log("Usuario autenticado:", req.user);
     console.log("ROL del usuario:", req.user.rol);
     next();
   } catch (error) {
