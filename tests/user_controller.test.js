@@ -139,6 +139,7 @@ describe("User Controller", () => {
     expect(res.json).toHaveBeenCalledWith(fakeUsers);
   });
 
+  
   test('nuevaPassword - cambia correctamente', async () => {
     req.params.cedula = '123';
     req.body = {

@@ -1,38 +1,25 @@
 import {
-  agregarAccesorio,
-  listarAccesorios,
-  listarAccesoriosPorResponsable,
-  detalleAccesorio,
-  actualizarAccesorio,
-  eliminarAccesorio
-} from '../src/controllers/accesory_controller.js';
+  crearCategoria,
+  listarCategorias,
+  actualizarCategorias,
+  eliminarCategoria
+} from '../src/controllers/category_controller.js';
 
-import Accesories from '../src/models/accesory.js';
-import Products from '../src/models/product.js';
+
 import Categories from '../src/models/category.js';
 
-jest.mock('../src/models/accesory.js');
-jest.mock('../src/models/product.js');
 jest.mock('../src/models/category.js');
 
-describe('accesory_controller', () => {
+describe('category_controller', () => {
   let req, res;
 
   beforeEach(() => {
     req = {
       body: {
-        codigoModeloAccs: 'A1',
-        categoriaNombre: 'Audio',
-        nombreAccs: 'Auriculares',
-        precioAccs: 25
+        nombreCategoria: 'Audio',
+        descripcionCategoria: 'Dispositivos relacionados al sonido'
       },
-      params: { codigoBarras: '1234567890123' },
-      user: {
-        _id: 'user123',
-        nombre: 'Usuario Prueba',
-        area: 'Bodega'
-      },
-      query: {}
+      params: { id: 'cat123' }
     };
 
     res = {
@@ -43,105 +30,144 @@ describe('accesory_controller', () => {
     jest.clearAllMocks();
   });
 
-  test('agregarAccesorio - éxito', async () => {
-    Categories.findOne.mockResolvedValue({ _id: 'cat123' });
-    Products.findOne.mockResolvedValue(null);
-    Accesories.findOne.mockResolvedValue(null);
-    Accesories.prototype.save = jest.fn();
+  // === crearCategoria ===
+  test('crearCategoria - éxito', async () => {
+    Categories.findOne.mockResolvedValue(null);
+    Categories.prototype.save = jest.fn();
 
-    await agregarAccesorio(req, res);
+    await crearCategoria(req, res);
 
+    expect(Categories.findOne).toHaveBeenCalledWith({ nombreCategoria: 'audio' });
+    expect(Categories.prototype.save).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
       msg: expect.any(String),
-      accesorio: expect.any(Object)
+      categoria: expect.any(Object)
     }));
   });
 
-  test('listarAccesorios - éxito', async () => {
-    Accesories.find.mockResolvedValue([{ nombreAccs: 'Teclado' }]);
+  test('crearCategoria - campos incompletos', async () => {
+    req.body = { nombreCategoria: '', descripcionCategoria: '' };
 
-    await listarAccesorios(req, res);
+    await crearCategoria(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(expect.any(Array));
-  });
-
-  test('listarAccesoriosPorResponsable - con fechas vacías', async () => {
-    Accesories.find.mockResolvedValue([{ nombreAccs: 'Mouse' }]);
-
-    await listarAccesoriosPorResponsable(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(expect.any(Array));
-  });
-
-  test('detalleAccesorio - accesorio encontrado', async () => {
-    Accesories.findOne.mockResolvedValue({ nombreAccs: 'Monitor' });
-
-    await detalleAccesorio(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ accesorio: { nombreAccs: 'Monitor' } });
-  });
-
-  test('detalleAccesorio - accesorio no encontrado', async () => {
-    Accesories.findOne.mockResolvedValue(null);
-
-    await detalleAccesorio(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      msg: expect.any(String)
+      msg: "Todos los campos son obligatorios"
     }));
   });
 
-  test('actualizarAccesorio - accesorio encontrado', async () => {
-    const accesorio = {
-      save: jest.fn(),
-      codigoUnicoAccs: 'X1',
-      nombreAccs: 'OldName',
-      precioAccs: 20,
-      disponibilidadAccs: 'Disponible'
+  test('crearCategoria - categoría ya existe', async () => {
+    Categories.findOne.mockResolvedValue({ _id: 'existente' });
+
+    await crearCategoria(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      msg: "El nombre de la categoría ya existe"
+    }));
+  });
+
+  test('crearCategoria - error interno', async () => {
+    Categories.findOne.mockRejectedValue(new Error('DB error'));
+
+    await crearCategoria(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      msg: "Error al crear la categoría"
+    }));
+  });
+
+  // === listarCategorias ===
+  test('listarCategorias - éxito', async () => {
+    Categories.find.mockResolvedValue([{ nombreCategoria: 'Audio' }]);
+
+    await listarCategorias(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith([{ nombreCategoria: 'Audio' }]);
+  });
+
+  test('listarCategorias - error interno', async () => {
+    Categories.find.mockRejectedValue(new Error('DB error'));
+
+    await listarCategorias(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      msg: "Error al obtener categorias"
+    }));
+  });
+
+  // === actualizarCategorias ===
+  test('actualizarCategorias - éxito', async () => {
+    const categoria = {
+      nombreCategoria: 'old',
+      descripcionCategoria: 'old desc',
+      save: jest.fn()
     };
 
-    Accesories.findOne.mockResolvedValue(accesorio);
+    Categories.findById.mockResolvedValue(categoria);
 
     req.body = {
-      codigoUnicoAccs: 'X2',
-      nombreAccs: 'NewName',
-      precioAccs: 30,
-      disponibilidadAccs: 'Agotado'
+      nombreCategoria: 'nuevo audio',
+      descripcionCategoria: 'nueva descripción'
     };
 
-    await actualizarAccesorio(req, res);
+    await actualizarCategorias(req, res);
 
-    expect(accesorio.save).toHaveBeenCalled();
+    expect(categoria.save).toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      msg: expect.any(String)
+      msg: "Categoria actualizada correctamente",
+      categoria: expect.any(Object)
     }));
   });
 
-  test('eliminarAccesorio - accesorio encontrado', async () => {
-    Accesories.findOneAndDelete.mockResolvedValue({ codigoBarrasAccs: '123' });
+  test('actualizarCategorias - no encontrada', async () => {
+    Categories.findById.mockResolvedValue(null);
 
-    await eliminarAccesorio(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      msg: expect.any(String)
-    }));
-  });
-
-  test('eliminarAccesorio - accesorio no encontrado', async () => {
-    Accesories.findOneAndDelete.mockResolvedValue(null);
-
-    await eliminarAccesorio(req, res);
+    await actualizarCategorias(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      msg: expect.any(String)
-    }));
+    expect(res.json).toHaveBeenCalledWith({ msg: "Categoria no encontrada" });
+  });
+
+  test('actualizarCategorias - error interno', async () => {
+    Categories.findById.mockRejectedValue(new Error('DB error'));
+
+    await actualizarCategorias(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Error al actualizar la categoria" });
+  });
+
+  // === eliminarCategoria ===
+  test('eliminarCategoria - éxito', async () => {
+    Categories.findByIdAndDelete.mockResolvedValue({ _id: 'cat123' });
+
+    await eliminarCategoria(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Categoria eliminada correctamente" });
+  });
+
+  test('eliminarCategoria - no encontrada', async () => {
+    Categories.findByIdAndDelete.mockResolvedValue(null);
+
+    await eliminarCategoria(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Categoria no encontrada" });
+  });
+
+  test('eliminarCategoria - error interno', async () => {
+    Categories.findByIdAndDelete.mockRejectedValue(new Error('DB error'));
+
+    await eliminarCategoria(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Error al eliminar la categoria" });
   });
 });

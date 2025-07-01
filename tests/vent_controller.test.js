@@ -33,14 +33,16 @@ describe('Vents Controller', () => {
 
   describe('registrarVenta', () => {
     test('Debe retornar 400 si cliente incompleto', async () => {
-      req.body = { cliente: { cedula: '', nombre: '' }, productos: [], accesorios: [], metodoPago: 'efectivo' };
+      req.body = { cliente: { cedula: '', nombre: '' }, 
+      productos: [], accesorios: [], metodoPago: 'efectivo' };
       await registrarVenta(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({ msg: "Información del cliente incompleta" });
     });
 
     test('Debe retornar 400 si no hay productos ni accesorios', async () => {
-      req.body = { cliente: { cedula: '123', nombre: 'Juan' }, productos: [], accesorios: [], metodoPago: 'efectivo' };
+      req.body = { cliente: { cedula: '123', nombre: 'Juan' }, 
+      productos: [], accesorios: [], metodoPago: 'efectivo' };
       await registrarVenta(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({ msg: "Debes agregar al menos un producto o un accesorio" });
@@ -57,7 +59,8 @@ describe('Vents Controller', () => {
       };
       await registrarVenta(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ msg: "Debes ingresar número y descripción del documento para pagos por transferencia" });
+      expect(res.json).toHaveBeenCalledWith(
+        { msg: "Debes ingresar número y descripción del documento para pagos por transferencia" });
     });
 
     test('Debe retornar 404 si producto no existe', async () => {
@@ -84,7 +87,8 @@ describe('Vents Controller', () => {
         metodoPago: 'efectivo'
       };
 
-      Products.findOne.mockResolvedValue({ estado: "No disponible", _id: 'p1', codigoBarras: 'prod1', nombreEquipo: 'Equipo', capacidad: '128GB', color: 'Negro', codigoSerial: '123', precio: 100 });
+      Products.findOne.mockResolvedValue({ estado: "No disponible", _id: 'p1', codigoBarras: 'prod1', 
+        nombreEquipo: 'Equipo', capacidad: '128GB', color: 'Negro', codigoSerial: '123', precio: 100 });
 
       await registrarVenta(req, res);
 
@@ -105,7 +109,7 @@ describe('Vents Controller', () => {
       await registrarVenta(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ msg: "Producto con código undefined no encontrado" }); // ojo, en tu código usas item.codigoBarras en el mensaje pero deberías corregirlo a codigoBarrasAccs
+      expect(res.json).toHaveBeenCalledWith({ msg: "Producto con código undefined no encontrado" }); 
     });
 
     test('Debe retornar 400 si accesorio no está disponible', async () => {
@@ -116,7 +120,8 @@ describe('Vents Controller', () => {
         metodoPago: 'efectivo'
       };
 
-      Accesories.findOne.mockResolvedValue({ disponibilidadAccs: "No disponible", _id: 'a1', codigoBarrasAccs: 'acc1', nombreAccs: 'Accesorio', precioAccs: 50 });
+      Accesories.findOne.mockResolvedValue({ disponibilidadAccs: "No disponible", _id: 'a1', 
+        codigoBarrasAccs: 'acc1', nombreAccs: 'Accesorio', precioAccs: 50 });
 
       await registrarVenta(req, res);
 
@@ -133,7 +138,9 @@ describe('Vents Controller', () => {
         descuento: 200
       };
 
-      Products.findOne.mockResolvedValue({ estado: "Disponible", _id: 'p1', codigoBarras: 'prod1', nombreEquipo: 'Equipo', capacidad: '128GB', color: 'Negro', codigoSerial: '123', precio: 100, save: jest.fn() });
+      Products.findOne.mockResolvedValue({ estado: "Disponible", _id: 'p1', codigoBarras: 'prod1', 
+        nombreEquipo: 'Equipo', capacidad: '128GB', color: 'Negro', codigoSerial: '123',
+         precio: 100, save: jest.fn() });
 
       req.user = { _id: 'user123', nombre: 'Vendedor1' };
 
@@ -154,11 +161,13 @@ describe('Vents Controller', () => {
 
       // Mock productos y accesorios disponibles
       const mockProducto = { 
-        estado: "Disponible", _id: 'p1', codigoBarras: 'prod1', nombreEquipo: 'Equipo', capacidad: '128GB', color: 'Negro', codigoSerial: '123', precio: 100, 
+        estado: "Disponible", _id: 'p1', codigoBarras: 'prod1', 
+        nombreEquipo: 'Equipo', capacidad: '128GB', color: 'Negro', codigoSerial: '123', precio: 100, 
         save: jest.fn()
       };
       const mockAccesorio = {
-        disponibilidadAccs: "Disponible", _id: 'a1', codigoBarrasAccs: 'acc1', nombreAccs: 'Accesorio', precioAccs: 50,
+        disponibilidadAccs: "Disponible", _id: 'a1', codigoBarrasAccs: 'acc1', 
+        nombreAccs: 'Accesorio', precioAccs: 50,
         save: jest.fn()
       };
 
@@ -191,7 +200,8 @@ describe('Vents Controller', () => {
       };
 
       const mockProducto = { 
-        estado: "Disponible", _id: 'p1', codigoBarras: 'prod1', nombreEquipo: 'Equipo', capacidad: '128GB', color: 'Negro', codigoSerial: '123', precio: 100, 
+        estado: "Disponible", _id: 'p1', codigoBarras: 'prod1', nombreEquipo: 
+        'Equipo', capacidad: '128GB', color: 'Negro', codigoSerial: '123', precio: 100, 
         save: jest.fn()
       };
 
@@ -209,7 +219,8 @@ describe('Vents Controller', () => {
 
       expect(Products.findByIdAndUpdate).toHaveBeenCalledWith('p1', { estado: "Disponible" });
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ msg: "Ocurrió un error al registrar la venta, los productos fueron revertidos" });
+      expect(res.json).toHaveBeenCalledWith(
+        { msg: "Ocurrió un error al registrar la venta, los productos fueron revertidos" });
     });
   });
 
@@ -299,7 +310,7 @@ describe('Vents Controller', () => {
       expect(res.json).toHaveBeenCalledWith({ msg: "Venta no encontrada" });
     });
 
-    test('Debe eliminar venta y revertir productos', async () => {
+    test('Debe eliminar venta', async () => {
       req.params = { id: 'venta123' };
       const mockVenta = {
         productos: [
@@ -316,7 +327,7 @@ describe('Vents Controller', () => {
       expect(Products.findByIdAndUpdate).toHaveBeenCalledTimes(2);
       expect(mockVenta.deleteOne).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ msg: "Venta eliminada correctamente y productos revertidos" });
+      expect(res.json).toHaveBeenCalledWith({ msg: "Venta eliminada correctamente" });
     });
 
     test('Debe retornar 500 si error en DB', async () => {

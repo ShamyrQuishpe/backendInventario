@@ -83,10 +83,10 @@ describe('Visualizaciones Controller', () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(mockAccesorios);
   });
-
+  
   test('listarStockDisponible debe retornar productos y accesorios agrupados', async () => {
     const productosMock = [
-      { codigoModelo: '123', cantidad: 3, nombreEquipo: 'Galaxy' }
+      { codigoModelo: '123', cantidad: 3, nombreEquipo: 'iPhone' }
     ];
     const accesoriosMock = [
       { codigoModeloAccs: 'A1', cantidad: 5, nombreAccs: 'Cable' }

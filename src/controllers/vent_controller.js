@@ -244,7 +244,7 @@ const eliminarVenta = async (req, res) => {
 
         await venta.deleteOne();
 
-        res.status(200).json({ msg: "Venta eliminada correctamente y productos revertidos" });
+        res.status(200).json({ msg: "Venta eliminada correctamente" });
     } catch (error) {
         console.error("Error al eliminar la venta:", error);
         res.status(500).json({ msg: "Error al eliminar la venta" });
