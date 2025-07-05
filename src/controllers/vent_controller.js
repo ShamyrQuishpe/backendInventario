@@ -152,9 +152,6 @@ const registrarVenta = async (req, res) => {
 };
 const listarVentasPorVendedor = async (req, res) => {
     try {
-        if (!req.usuario || !req.usuario._id) {
-        return res.status(401).json({ message: 'Usuario no autenticado' });
-        }
         const { desde, hasta } = req.query;
 
         let fechaInicio, fechaFin;
@@ -189,7 +186,6 @@ const listarVentasPorVendedor = async (req, res) => {
         }
 
         const userID = req.user._id;
-
         if(!userID){
             return res.status(401).json({ message: 'Usuario no autenticado' });
         }
