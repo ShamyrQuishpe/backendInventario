@@ -19,7 +19,7 @@ router.get('/listarVentasVendedor', autenticar, verificarRol('Vendedor'), listar
 
 router.get('/ventas', autenticar, verificarRol('Administrador'), listarVentasPorFecha) //Monica
 
-router.put('/actualizarVenta/:id', autenticar, verificarRol('Vendedor'), actualizarVenta) //Monica
+router.put('/actualizarVenta/:id', autenticar, verificarRol('Administrador', 'Vendedor'), actualizarVenta) //Monica
 
 router.delete('/eliminarVenta/:id', autenticar, verificarRol('Administrador'), eliminarVenta ) //Monica
 
