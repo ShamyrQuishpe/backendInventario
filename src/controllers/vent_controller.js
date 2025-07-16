@@ -207,11 +207,11 @@ const listarVentasPorVendedor = async (req, res) => {
 
 const actualizarVenta = async (req, res) => {
     try {
-        const { observacion, metodoPago } = req.body; //actualizar cliente y descuento
+        const { observacion, metodoPago, descripcionDocumento, numeroDocumento } = req.body; //actualizar cliente y descuento
 
         const ventaActualizada = await Vents.findByIdAndUpdate(
             req.params.id,
-            { observacion, metodoPago },
+            { observacion, metodoPago, descripcionDocumento, numeroDocumento },
             { new: true }
         );
 
